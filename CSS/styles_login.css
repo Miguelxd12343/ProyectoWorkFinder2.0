@@ -1,0 +1,94 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .login-box {
+    width: 35%;
+    background-color: #e6e6e6;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .back-arrow {
+    font-size: 24px;
+    text-decoration: none;
+    color: black;
+  }
+  
+  .logo {
+    width: 60px;
+    display: block;
+    margin: 1rem auto;
+  }
+  
+  .login-box h2 {
+    text-align: center;
+    color: #0070a0;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .login-box h3 {
+    text-align: center;
+    color: #0070a0;
+    margin-bottom: 1rem;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    margin-top: 10px;
+    font-size: 0.9rem;
+  }
+  
+  input {
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: none;
+    background-color: #fff;
+  }
+  
+  .login-button {
+    background-color: #407dc9;
+    color: white;
+    padding: 10px;
+    border: none;
+    font-size: 1rem;
+    margin-top: 5px;
+    cursor: pointer;
+  }
+  
+  .register-text {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .register-text a {
+    color: #0070a0;
+    text-decoration: none;
+  }
+  
+  .image-section {
+    width: 65%;
+  }
+  
+  .image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }

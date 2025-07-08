@@ -1,0 +1,58 @@
+CREATE DATABASE baseayl;
+USE baseayl;
+
+CREATE TABLE rol (
+    IdRol INT AUTO_INCREMENT PRIMARY KEY,
+    NombreRol VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE empresaasociada (
+    IdEmpresa INT AUTO_INCREMENT PRIMARY KEY,
+    NombreEmpresa VARCHAR(100) NOT NULL,
+    Direccion VARCHAR(255),
+    Telefono VARCHAR(15)
+);
+
+CREATE TABLE usuario (
+    IdUsuario INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    Contrasena VARCHAR(255) NOT NULL,
+    IdRol INT NOT NULL,
+    FOREIGN KEY (IdRol) REFERENCES rol(IdRol) ON DELETE CASCADE
+);
+
+CREATE TABLE hojadevida (
+    IdHojaDeVida INT AUTO_INCREMENT PRIMARY KEY,
+    ExperienciaLaboral TEXT,
+    Educacion TEXT,
+    Habilidades TEXT,
+    IdUsuario INT NOT NULL,
+    FOREIGN KEY (IdUsuario) REFERENCES usuario(IdUsuario) ON DELETE CASCADE
+);
+
+CREATE TABLE puestodetrabajo (
+    IdPuesto INT AUTO_INCREMENT PRIMARY KEY,
+    NombrePuesto VARCHAR(100) NOT NULL,
+    Descripcion TEXT,
+    Estado VARCHAR(50) NOT NULL,
+    IdEmpresa INT NOT NULL,
+    FOREIGN KEY (IdEmpresa) REFERENCES empresaasociada(IdEmpresa) ON DELETE CASCADE
+);
+
+CREATE TABLE solicitudempleo (
+    IdSolicitud INT AUTO_INCREMENT PRIMARY KEY,
+    FechaEnvio DATE NOT NULL,
+    Estado VARCHAR(50) NOT NULL,
+    IdUsuario INT NOT NULL,
+    IdPuestoTrabajo INT NOT NULL,
+    FOREIGN KEY (IdUsuario) REFERENCES usuario(IdUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (IdPuestoTrabajo) REFERENCES puestodetrabajo(IdPuesto) ON DELETE CASCADE
+);
+
+
+INSERT INTO rol (NombreRol) VALUES ('Empresa'), ('Candidato');
+
+ALTER TABLE usuario 
+ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL,
+ADD COLUMN token_expiry DATETIME DEFAULT NULL;

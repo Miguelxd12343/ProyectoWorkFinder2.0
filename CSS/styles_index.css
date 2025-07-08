@@ -1,0 +1,82 @@
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .top-bar {
+            background: #e0e0e0;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-weight: bold;
+        }
+        .login {
+            text-decoration: none;
+            color: black;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0073b1;
+            padding: 10px 20px;
+        }
+        .search-bar {
+            display: flex;
+        }
+        .search-bar input {
+            padding: 5px;
+            border: none;
+        }
+        .search-bar button {
+            background: white;
+            border: none;
+            padding: 5px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+        }
+        .btn-green {
+            background: #4CAF50;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .hero {
+            position: relative;
+        }
+        .hero img {
+            width: 100%;
+            height: auto;
+        }
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+        .hero-content h1{
+            font-size: 54px;
+        }
+        .upload-btn {
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .info-box {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }

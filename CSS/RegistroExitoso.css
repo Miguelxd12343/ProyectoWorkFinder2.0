@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('../images/FondoSingup.png') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.mensaje-container {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 320px;
+}
+
+.mensaje-container img {
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+.mensaje-container h2 {
+  color: #0077cc;
+  margin-bottom: 10px;
+}
+
+.mensaje-container p {
+  margin: 10px 0 20px;
+  color: #333;
+}
+
+.mensaje-container a {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0077cc;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.mensaje-container a:hover {
+  background-color: #005fa3;
+}
