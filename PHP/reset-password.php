@@ -20,14 +20,17 @@ if (!$user) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Actualizar contraseña</title>
-  <link rel="stylesheet" href="../CSS/reset-password.css">
+  <link rel="stylesheet" href="../CSS/reset_password.css">
 </head>
 <body>
-  <form action="/ProyectoWorkFinder/PHP/update-password.php" method="POST">
+  <div class="mensaje-container">
+  <img src="../images/imagesolologo.png" alt="Logo">
+  <form action="update-password.php" method="POST">
   <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
-  <label>Nueva contraseña:</label><br>
-  <input type="password" name="password" required><br><br>
-  <input type="submit" value="Actualizar contraseña">
-</form>
+  <p>Nueva contraseña:</p>
+  <input id="contraseña" type="password" name="password" placeholder="Nueva Contraseña" required><br><br>
+  <input id="boton" type="submit" value="Actualizar contraseña">
+  </form>
+</div>
 </body>
 </html>
