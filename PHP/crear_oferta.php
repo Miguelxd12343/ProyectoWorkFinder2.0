@@ -15,10 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = $_POST['descripcion'] ?? '';
     $ubicacion = $_POST['ubicacion'] ?? '';
     $contrato = $_POST['tipo_contrato'] ?? '';
-    $estado = 'activo'; // nuevo campo
+    $estado = 'Activa'; // debe coincidir con la base de datos y dashboard
 
     if ($titulo && $descripcion) {
-        $stmt = $pdo->prepare("INSERT INTO puestodetrabajo (IdUsuario, Titulo, Descripcion, Ubicacion, TipoContrato, Estado) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO puestodetrabajo (IdUsuario, Titulo, Descripcion, Ubicacion, TipoContrato, Estado) 
+                               VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$_SESSION['usuario_id'], $titulo, $descripcion, $ubicacion, $contrato, $estado]);
         $mensaje = "Oferta publicada exitosamente.";
     } else {

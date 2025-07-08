@@ -117,3 +117,31 @@ body {
 .oferta p {
   margin: 5px 0;
 }
+
+.oferta form {
+  margin-top: 15px;
+}
+
+.oferta button {
+  background-color: #0073b1;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.oferta button:hover {
+  background-color: #005f91;
+}
+
+.alert {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+}

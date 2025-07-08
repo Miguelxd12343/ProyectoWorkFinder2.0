@@ -1,11 +1,14 @@
-CREATE DATABASE baseayl;
+-- Crear base de datos
+CREATE DATABASE IF NOT EXISTS baseayl;
 USE baseayl;
 
+-- Tabla de roles
 CREATE TABLE rol (
     IdRol INT AUTO_INCREMENT PRIMARY KEY,
     NombreRol VARCHAR(50) NOT NULL
 );
 
+-- Tabla de empresas (relacionada por ahora, aunque no se está usando mucho)
 CREATE TABLE empresaasociada (
     IdEmpresa INT AUTO_INCREMENT PRIMARY KEY,
     NombreEmpresa VARCHAR(100) NOT NULL,
@@ -13,15 +16,21 @@ CREATE TABLE empresaasociada (
     Telefono VARCHAR(15)
 );
 
+-- Tabla de usuarios (empresa, candidato, admin)
 CREATE TABLE usuario (
     IdUsuario INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Contrasena VARCHAR(255) NOT NULL,
     IdRol INT NOT NULL,
+    DireccionEmpresa VARCHAR(255),             -- NUEVO
+    IdentificacionFiscal VARCHAR(50),          -- NUEVO
+    reset_token VARCHAR(255) DEFAULT NULL,     -- Recuperación de contraseña
+    token_expiry DATETIME DEFAULT NULL,        -- Expiración del token
     FOREIGN KEY (IdRol) REFERENCES rol(IdRol) ON DELETE CASCADE
 );
 
+-- Tabla de hojas de vida (para candidatos)
 CREATE TABLE hojadevida (
     IdHojaDeVida INT AUTO_INCREMENT PRIMARY KEY,
     ExperienciaLaboral TEXT,
@@ -31,15 +40,20 @@ CREATE TABLE hojadevida (
     FOREIGN KEY (IdUsuario) REFERENCES usuario(IdUsuario) ON DELETE CASCADE
 );
 
+-- Tabla de puestos de trabajo (ofertas creadas por empresas)
 CREATE TABLE puestodetrabajo (
     IdPuesto INT AUTO_INCREMENT PRIMARY KEY,
-    NombrePuesto VARCHAR(100) NOT NULL,
-    Descripcion TEXT,
-    Estado VARCHAR(50) NOT NULL,
-    IdEmpresa INT NOT NULL,
-    FOREIGN KEY (IdEmpresa) REFERENCES empresaasociada(IdEmpresa) ON DELETE CASCADE
+    IdUsuario INT NOT NULL,
+    Titulo VARCHAR(100) NOT NULL,
+    Descripcion TEXT NOT NULL,
+    Ubicacion VARCHAR(100),
+    TipoContrato VARCHAR(50),
+    FechaPublicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Estado VARCHAR(50) DEFAULT 'Activa',     -- NUEVO: Estado por defecto
+    FOREIGN KEY (IdUsuario) REFERENCES usuario(IdUsuario) ON DELETE CASCADE
 );
 
+-- Tabla de solicitudes de empleo (por candidatos)
 CREATE TABLE solicitudempleo (
     IdSolicitud INT AUTO_INCREMENT PRIMARY KEY,
     FechaEnvio DATE NOT NULL,
@@ -50,9 +64,5 @@ CREATE TABLE solicitudempleo (
     FOREIGN KEY (IdPuestoTrabajo) REFERENCES puestodetrabajo(IdPuesto) ON DELETE CASCADE
 );
 
-
-INSERT INTO rol (NombreRol) VALUES ('Empresa'), ('Candidato');
-
-ALTER TABLE usuario 
-ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL,
-ADD COLUMN token_expiry DATETIME DEFAULT NULL;
+-- Insertar roles
+INSERT INTO rol (NombreRol) VALUES ('Empresa'), ('Candidato'), ('Administrador');

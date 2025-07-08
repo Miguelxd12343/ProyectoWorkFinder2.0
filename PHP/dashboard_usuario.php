@@ -1,5 +1,5 @@
 <?php
-require 'auth_guard.php';
+require 'auth_guard.php'; // Aquí ya se incluye session_start() si es necesario
 require_once(__DIR__ . '/conexion.php');
 ?>
 
@@ -25,6 +25,13 @@ require_once(__DIR__ . '/conexion.php');
 
   <div class="main">
     <div class="header">
+      
+      <?php if (isset($_GET['msg'])): ?>
+  <div class="alert">
+    <?= htmlspecialchars($_GET['msg']) ?>
+  </div>
+<?php endif; ?>
+
       <h1>Bienvenido, <strong><?php echo $_SESSION['usuario_nombre']; ?></strong></h1>
     </div>
 
@@ -35,7 +42,7 @@ require_once(__DIR__ . '/conexion.php');
         <p>
           <?php
           try {
-              $stmt = $pdo->prepare("SELECT COUNT(*) FROM puestodetrabajo WHERE Estado = 'activo'");
+              $stmt = $pdo->prepare("SELECT COUNT(*) FROM puestodetrabajo WHERE Estado = 'Activa'");
               $stmt->execute();
               $ofertas = $stmt->fetchColumn();
               echo $ofertas . ' ofertas activas';
@@ -69,13 +76,17 @@ require_once(__DIR__ . '/conexion.php');
       <h2>Ofertas Disponibles</h2>
       <?php
       try {
-          $stmt = $pdo->query("SELECT Titulo, Descripcion, Ubicacion, TipoContrato FROM puestodetrabajo WHERE Estado = 'activo' ORDER BY FechaPublicacion DESC");
+          $stmt = $pdo->query("SELECT IdPuesto, Titulo, Descripcion, Ubicacion, TipoContrato FROM puestodetrabajo WHERE Estado = 'Activa' ORDER BY FechaPublicacion DESC");
           while ($oferta = $stmt->fetch()) {
               echo "<div class='oferta'>";
               echo "<h3>" . htmlspecialchars($oferta['Titulo']) . "</h3>";
               echo "<p><strong>Ubicación:</strong> " . htmlspecialchars($oferta['Ubicacion']) . "</p>";
               echo "<p><strong>Tipo de Contrato:</strong> " . htmlspecialchars($oferta['TipoContrato']) . "</p>";
               echo "<p>" . nl2br(htmlspecialchars($oferta['Descripcion'])) . "</p>";
+              echo "<form method='POST' action='postular_oferta.php'>";
+              echo "<input type='hidden' name='id_puesto' value='" . $oferta['IdPuesto'] . "'>";
+              echo "<button type='submit'>Postularse</button>";
+              echo "</form>";
               echo "</div>";
           }
       } catch (PDOException $e) {

@@ -21,7 +21,7 @@ $nombreEmpresa = $_SESSION['usuario_nombre'];
     <div class="sidebar">
         <h2>WorkFinderPro</h2>
         <ul>
-            <li class="active"><a href="#">Inicio</a></li>
+            <li class="active"><a href="dashboard_empresa.php">Inicio</a></li>
             <li><a href="crear_oferta.php">Crear Oferta</a></li>
             <li><a href="ver_ofertas_empresa.php">Ver Ofertas Publicadas</a></li>
             <li><a href="logout.php">Cerrar Sesión</a></li>

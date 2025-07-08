@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user) {
         $stmt = $pdo->prepare("UPDATE usuario SET Contrasena = ?, reset_token = NULL, token_expiry = NULL WHERE idUsuario = ?");
         $stmt->execute([$password, $user['idUsuario']]);
-        echo "Contraseña actualizada correctamente.";
+        header("Location: ../HTML/contraseña_actualizada.html");
     } else {
         echo "Token inválido o expirado.";
     }

@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                          '<a href="'. $link .'">Restablecer Contraseña</a>' .
                          "<br><br>Si no solicitaste esto, ignora este correo.";
             $mail->send();
-            echo "Correo enviado. Revisa tu bandeja.";
+
+            header("Location: ../HTML/correo_enviado.html");
         } catch (Exception $e) {
             echo "Error al enviar: {$mail->ErrorInfo}";
         }
