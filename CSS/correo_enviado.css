@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: url('../images/FondoSingup.png') no-repeat center center fixed;
+  background: url('../images/FondoSignup.png') no-repeat center center fixed;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -35,14 +35,10 @@ body {
 
 .mensaje-container a {
   display: inline-block;
-  padding: 10px 20px;
-  background-color: #0077cc;
+  padding: 10px 10px;
   color: white;
   text-decoration: none;
   border-radius: 6px;
   transition: background-color 0.3s ease;
 }
 
-.mensaje-container a:hover {
-  background-color: #005fa3;
-}
