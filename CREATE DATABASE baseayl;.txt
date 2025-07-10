@@ -64,5 +64,35 @@ CREATE TABLE solicitudempleo (
     FOREIGN KEY (IdPuestoTrabajo) REFERENCES puestodetrabajo(IdPuesto) ON DELETE CASCADE
 );
 
+-- Tabla perfil de usuario
+
+CREATE TABLE perfilusuario (
+    IdPerfil INT AUTO_INCREMENT PRIMARY KEY,
+    IdUsuario INT NOT NULL,
+    Edad INT,
+    Cedula VARCHAR(20),
+    EstadoCivil VARCHAR(50),
+    Telefono VARCHAR(20),
+    Direccion VARCHAR(255),
+    EmpleoDeseado VARCHAR(100),
+    Descripcion TEXT,
+    HojaDeVidaPath VARCHAR(255),
+    FotoPerfilPath VARCHAR(255),
+    FechaActualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (IdUsuario) REFERENCES usuario(IdUsuario) ON DELETE CASCADE
+);
+-- añadir campos de información a hoja de vida
+
+ALTER TABLE hojadevida 
+ADD COLUMN Edad INT NULL,
+ADD COLUMN Cedula VARCHAR(20) NULL,
+ADD COLUMN EstadoCivil VARCHAR(50) NULL,
+ADD COLUMN Telefono VARCHAR(20) NULL,
+ADD COLUMN Direccion VARCHAR(255) NULL,
+ADD COLUMN PuestoDeseado VARCHAR(100) NULL,
+ADD COLUMN Descripcion TEXT NULL,
+ADD COLUMN ArchivoCV VARCHAR(255) NULL;
+
+
 -- Insertar roles
 INSERT INTO rol (NombreRol) VALUES ('Empresa'), ('Candidato'), ('Administrador');
