@@ -96,3 +96,11 @@ ADD COLUMN ArchivoCV VARCHAR(255) NULL;
 
 -- Insertar roles
 INSERT INTO rol (NombreRol) VALUES ('Empresa'), ('Candidato'), ('Administrador');
+
+INSERT INTO usuario (Nombre, Email, Contrasena, IdRol)
+VALUES (
+    'Administrador',
+    'admin@admin.com',
+    '$2y$10$UqUecbqNNH45fz5ktqmRM.cVkC61.OcA7b819Yv/OHxMFISDk7UiK',
+    3
+);

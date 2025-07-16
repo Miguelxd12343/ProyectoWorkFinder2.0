@@ -9,13 +9,25 @@ session_start();
 
 $error = "";
 
+$adminEmail = 'admin@admin.com';
+$adminPasswordHash = password_hash('admin123', PASSWORD_DEFAULT);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $_POST['username'] ?? '';
     $pass = $_POST['password'] ?? '';
 
+    echo "Email ingresado: " . htmlspecialchars($user) . "<br>";
+    echo "Contraseña ingresada: " . htmlspecialchars($pass) . "<br>";
+
     $stmt = $pdo->prepare("SELECT IdUsuario, Contrasena, Nombre, IdRol FROM usuario WHERE Email = ?");
     $stmt->execute([$user]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$usuario) {
+    die("Usuario no encontrado");
+    } elseif (!password_verify($pass, $usuario['Contrasena'])) {
+    die("Contraseña incorrecta");
+    }
 
     if ($usuario && password_verify($pass, $usuario['Contrasena'])) {
         $_SESSION['usuario_id'] = $usuario['IdUsuario'];
@@ -31,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: ../PHP/dashboard_usuario.php');
                 break;
             case 3: // Administrador
-                header('Location: ../PHP/dashboard_admin.php');
+                header('Location: ../PHP/dashboard_administrador.php');
                 break;
             default:
                 $error = "Rol no reconocido.";
@@ -43,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- HTML igual al anterior -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
