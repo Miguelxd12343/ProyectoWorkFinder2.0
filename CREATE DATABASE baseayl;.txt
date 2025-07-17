@@ -104,3 +104,11 @@ VALUES (
     '$2y$10$UqUecbqNNH45fz5ktqmRM.cVkC61.OcA7b819Yv/OHxMFISDk7UiK',
     3
 );
+
+
+ALTER TABLE perfilusuario ADD CONSTRAINT unique_cedula UNIQUE (Cedula);
+
+USE baseayl;
+
+ALTER TABLE perfilusuario
+MODIFY COLUMN Edad DATE;
