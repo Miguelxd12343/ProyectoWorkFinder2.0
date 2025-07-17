@@ -26,7 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje = "Acceso inválido.";
 }
 
-// Redirige de nuevo al dashboard con mensaje
+// Redirige de nuevo al dashboard con mensaje kaiosfhighisdhfash
 header("Location: dashboard_usuario.php?msg=" . urlencode($mensaje));
 exit;
 ?>
+

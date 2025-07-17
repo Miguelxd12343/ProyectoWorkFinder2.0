@@ -112,3 +112,17 @@ USE baseayl;
 
 ALTER TABLE perfilusuario
 MODIFY COLUMN Edad DATE;
+
+
+-- invitaciones 
+CREATE TABLE invitaciones (
+    IdInvitacion INT AUTO_INCREMENT PRIMARY KEY,
+    IdEmpresa INT NOT NULL,          -- Se refiere al usuario empresa
+    IdCandidato INT NOT NULL,        -- Nuevo nombre para distinguir del anterior
+    IdPuesto INT NOT NULL,
+    FechaInvitacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Mensaje TEXT,
+    FOREIGN KEY (IdEmpresa) REFERENCES usuario(IdUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (IdCandidato) REFERENCES usuario(IdUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (IdPuesto) REFERENCES puestodetrabajo(IdPuesto) ON DELETE CASCADE
+);

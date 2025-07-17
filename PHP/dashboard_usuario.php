@@ -13,11 +13,12 @@ require_once(__DIR__ . '/conexion.php');
 </head>
 <body>
   <div class="sidebar">
-    <h2>WorkFinderPro</h2>
+    <h2><a href="../index.html" class="logo-link">WorkFinderPro</a></h2>
+
     <ul>
       <li class="active"><a href="dashboard_usuario.php">Inicio</a></li>
       <li><a href="perfil.php">Perfil</a></li>
-      <li><a href="#">Ofertas</a></li>
+      <li><a href="ver_ofertas.php">Ofertas</a></li>
       <li><a href="#">Solicitudes</a></li>
       <li><a href="logout.php">Cerrar sesión</a></li>
     </ul>
@@ -71,28 +72,7 @@ require_once(__DIR__ . '/conexion.php');
       </div>
     </div>
 
-    <!-- Sección de Ofertas Disponibles -->
-    <div class="ofertas-lista">
-      <h2>Ofertas Disponibles</h2>
-      <?php
-      try {
-          $stmt = $pdo->query("SELECT IdPuesto, Titulo, Descripcion, Ubicacion, TipoContrato FROM puestodetrabajo WHERE Estado = 'Activa' ORDER BY FechaPublicacion DESC");
-          while ($oferta = $stmt->fetch()) {
-              echo "<div class='oferta'>";
-              echo "<h3>" . htmlspecialchars($oferta['Titulo']) . "</h3>";
-              echo "<p><strong>Ubicación:</strong> " . htmlspecialchars($oferta['Ubicacion']) . "</p>";
-              echo "<p><strong>Tipo de Contrato:</strong> " . htmlspecialchars($oferta['TipoContrato']) . "</p>";
-              echo "<p>" . nl2br(htmlspecialchars($oferta['Descripcion'])) . "</p>";
-              echo "<form method='POST' action='postular_oferta.php'>";
-              echo "<input type='hidden' name='id_puesto' value='" . $oferta['IdPuesto'] . "'>";
-              echo "<button type='submit'>Postularse</button>";
-              echo "</form>";
-              echo "</div>";
-          }
-      } catch (PDOException $e) {
-          echo "<p>Error al cargar ofertas: " . $e->getMessage() . "</p>";
-      }
-      ?>
+    
     </div>
   </div>
 </body>
