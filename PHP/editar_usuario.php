@@ -1,5 +1,12 @@
 <?php
+require 'auth_guard.php';
 require_once(__DIR__ . '/conexion.php');
+
+// Refuerzo de control de caché
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
 session_start();
 
 // Solo admin puede acceder

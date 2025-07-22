@@ -1,3 +1,16 @@
+<?php
+require 'auth_guard.php'; // ✅ Esto es lo que debe ir al inicio
+require_once(__DIR__ . '/conexion.php');
+
+// Refuerzo de control de caché
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+session_start();
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,6 +19,13 @@
   <title>Dashboard Administrador</title>
   <link rel="stylesheet" href="../CSS/dashboard_admin.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        window.location.reload();
+      }
+    });
+  </script>
 </head>
 <body>
   <div class="sidebar">

@@ -154,3 +154,652 @@ body {
 .logo-link:hover {
     text-decoration: underline;
 }
+
+/* Estilos para el Sidebar - Agregar al CSS existente */
+.sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 0;
+  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  z-index: -1;
+}
+
+.sidebar h2 {
+  margin: 0;
+  padding: 25px 20px;
+  font-size: 1.8em;
+  font-weight: 300;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.sidebar h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1px;
+}
+
+.logo-link {
+  color: white !important;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.logo-link:hover {
+  color: #fff !important;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+.sidebar li.active::before {
+  transform: scaleY(1);
+}
+
+.sidebar li:hover::before {
+  transform: scaleY(1);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.sidebar a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  border-radius: 0;
+}
+
+.sidebar a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar a:hover::before {
+  opacity: 1;
+}
+
+.sidebar a:hover {
+  color: white;
+  transform: translateX(5px);
+  text-decoration: none;
+}
+
+.sidebar li.active a {
+  color: white;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.sidebar li.active a::before {
+  opacity: 1;
+}
+
+/* Iconos para cada elemento del menú */
+.sidebar a[href*="dashboard_usuario.php"]::after {
+  content: "🏠";
+  margin-left: auto;
+  font-size: 1.2em;
+}
+
+.sidebar a[href*="perfil.php"]::after {
+  content: "👤";
+  margin-left: auto;
+  font-size: 1.2em;
+}
+
+.sidebar a[href*="ver_ofertas.php"]::after {
+  content: "💼";
+  margin-left: auto;
+  font-size: 1.2em;
+}
+
+.sidebar a[href*="solicitudes.php"]::after {
+  content: "📝";
+  margin-left: auto;
+  font-size: 1.2em;
+}
+
+.sidebar a[href*="logout.php"]::after {
+  content: "🚪";
+  margin-left: auto;
+  font-size: 1.2em;
+}
+
+/* Efecto hover en los iconos */
+.sidebar a:hover::after {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
+
+/* Ajuste del contenido principal para el nuevo sidebar */
+.main {
+  margin-left: 250px;
+  min-height: 100vh;
+  background: #f8f9ff;
+  transition: margin-left 0.3s ease;
+}
+
+/* Responsive para el sidebar */
+@media (max-width: 968px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.active {
+    transform: translateX(0);
+  }
+  
+  .main {
+    margin-left: 0;
+  }
+  
+  /* Botón para mostrar sidebar en móvil */
+  .sidebar-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    display: none;
+  }
+  
+  .sidebar-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  @media (max-width: 968px) {
+    .sidebar-toggle {
+      display: block;
+    }
+  }
+}
+
+/* Overlay para cerrar sidebar en móvil */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Animaciones suaves */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.sidebar {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+/* Estilos para Dashboard Usuario - Agregar al CSS existente */
+
+/* Contenedor principal del dashboard */
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header del dashboard */
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 40px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.8em;
+  font-weight: 300;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 strong {
+  font-weight: 600;
+  background: linear-gradient(45deg, #fff, #f0f2ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header .subtitle {
+  margin-top: 10px;
+  font-size: 1.2em;
+  opacity: 0.9;
+  position: relative;
+  z-index: 2;
+}
+
+/* Alert mejorado */
+.alert {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  animation: slideInDown 0.5s ease-out;
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Contenedor de estadísticas */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+/* Tarjetas de estadísticas */
+.stat-card {
+  background: white;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 18px 18px 0 0;
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(102, 126, 234, 0.2);
+}
+
+.stat-card .icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-card .icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  opacity: 0.1;
+}
+
+.stat-card h3 {
+  color: #333;
+  font-size: 1.3em;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
+.stat-card .number {
+  color: #667eea;
+  font-size: 2.5em;
+  font-weight: 700;
+  margin: 10px 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-card .description {
+  color: #666;
+  font-size: 1em;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Iconos específicos para cada tarjeta */
+.stat-card.ofertas .icon {
+  color: #667eea;
+}
+
+.stat-card.postulaciones .icon {
+  color: #764ba2;
+}
+
+.stat-card.perfil .icon {
+  color: #28a745;
+}
+
+.stat-card.notificaciones .icon {
+  color: #ffc107;
+}
+
+/* Sección de acciones rápidas */
+.quick-actions {
+  background: white;
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+}
+
+.quick-actions h2 {
+  color: #333;
+  font-size: 1.8em;
+  font-weight: 600;
+  margin: 0 0 25px 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 20px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+  border: 2px solid rgba(102, 126, 234, 0.1);
+  border-radius: 15px;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.action-button:hover::before {
+  left: 100%;
+}
+
+.action-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+  text-decoration: none;
+  color: #667eea;
+}
+
+.action-button .icon {
+  font-size: 2.5em;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.action-button:hover .icon {
+  transform: scale(1.1);
+}
+
+.action-button .label {
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Sección de actividad reciente */
+.recent-activity {
+  background: white;
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.recent-activity h2 {
+  color: #333;
+  font-size: 1.8em;
+  font-weight: 600;
+  margin: 0 0 25px 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.activity-item:hover {
+  background-color: #f8f9ff;
+  border-radius: 10px;
+  margin: 0 -20px;
+  padding: 20px 20px;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  font-size: 1.3em;
+  background: linear-gradient(135deg, #f8f9ff, #e8ecff);
+  color: #667eea;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.activity-time {
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+  }
+  
+  .header {
+    padding: 30px 25px;
+  }
+  
+  .header h1 {
+    font-size: 2.2em;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .stat-card {
+    padding: 25px;
+  }
+  
+  .quick-actions,
+  .recent-activity {
+    padding: 25px;
+  }
+  
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .action-button {
+    padding: 20px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.8em;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+}

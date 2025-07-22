@@ -1,6 +1,13 @@
 <?php
+require 'auth_guard.php'; // ✅ Esto es lo que debe ir al inicio
 require_once(__DIR__ . '/conexion.php');
-session_start();
+
+// Refuerzo de control de caché
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 
 if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_rol'] != 1) {
     header('Location: login.php');
@@ -16,6 +23,13 @@ $nombreEmpresa = $_SESSION['usuario_nombre'];
     <meta charset="UTF-8">
     <title>Panel de Empresa - WorkFinderPro</title>
     <link rel="stylesheet" href="../CSS/dashboard_empresa.css">
+      <script>
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        window.location.reload();
+      }
+    });
+  </script>
 </head>
 <body>
     <div class="sidebar">
