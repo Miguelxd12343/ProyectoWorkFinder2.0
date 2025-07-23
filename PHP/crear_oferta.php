@@ -9,6 +9,7 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_rol'] != 1) {
 }
 
 $mensaje = "";
+$tipo_mensaje = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = $_POST['titulo'] ?? '';
@@ -22,8 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$_SESSION['usuario_id'], $titulo, $descripcion, $ubicacion, $contrato, $estado]);
         $mensaje = "Oferta publicada exitosamente.";
+        $tipo_mensaje = "success";
     } else {
         $mensaje = "Todos los campos obligatorios deben estar completos.";
+        $tipo_mensaje = "error";
     }
 }
 ?>
@@ -32,36 +35,117 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Crear Oferta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Oferta - WorkFinderPro</title>
   <link rel="stylesheet" href="../CSS/crear_oferta.css">
 </head>
 <body>
-  <div class="form-container">
-    <h2>Crear Oferta de Trabajo</h2>
-    <form method="POST">
-      <label>Título del Puesto *</label>
-      <input type="text" name="titulo" required>
+    <!-- Botón toggle para móviles -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+    
+    <!-- Overlay para cerrar sidebar en móviles -->
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-      <label>Descripción *</label>
-      <textarea name="descripcion" rows="6" required></textarea>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <h2><a href="../index.html" class="logo-link">WorkFinderPro</a></h2>
+        <ul>
+            <li class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard_empresa.php' ? 'active' : '' ?>">
+                <a href="dashboard_empresa.php">Inicio</a>
+            </li>
+            <li class="<?= basename($_SERVER['PHP_SELF']) == 'crear_oferta.php' ? 'active' : '' ?>">
+                <a href="crear_oferta.php">Crear Oferta</a>
+            </li>
+            <li class="<?= basename($_SERVER['PHP_SELF']) == 'ver_ofertas_empresa.php' ? 'active' : '' ?>">
+                <a href="ver_ofertas_empresa.php">Ver Ofertas Publicadas</a>
+            </li>
+            <li class="<?= basename($_SERVER['PHP_SELF']) == 'invitar_candidatos.php' ? 'active' : '' ?>">
+                <a href="invitar_candidatos.php">Invitar Candidatos</a>
+            </li>
+            <li class="<?= basename($_SERVER['PHP_SELF']) == 'ver_solicitudes_empresa.php' ? 'active' : '' ?>">
+                <a href="ver_solicitudes_empresa.php">Ver Solicitudes</a>
+            </li>
+            <li><a href="logout.php">Cerrar Sesión</a></li>
+        </ul>
+    </div>
 
-      <label>Ubicación</label>
-      <input type="text" name="ubicacion">
+    <!-- Contenido principal -->
+    <div class="main">
+        <div class="form-container">
+            <!-- Header -->
+            <div class="header">
+                <h1>📋 <strong>Crear Oferta de Trabajo</strong></h1>
+                <p class="subtitle">Publica una nueva oportunidad laboral para atraer el mejor talento</p>
+            </div>
 
-      <label>Tipo de Contrato</label>
-      <select name="tipo_contrato">
-        <option>Tiempo completo</option>
-        <option>Medio tiempo</option>
-        <option>Temporal</option>
-        <option>Prácticas</option>
-      </select>
+            <!-- Formulario -->
+            <div class="form-wrapper">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="titulo">Título del Puesto</label>
+                        <input type="text" id="titulo" name="titulo" placeholder="Ej: Desarrollador Full Stack Senior" required>
+                    </div>
 
-      <button type="submit">Publicar Oferta</button>
-    </form>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción del Puesto</label>
+                        <textarea id="descripcion" name="descripcion" rows="6" placeholder="Describe las responsabilidades, requisitos y beneficios del puesto..." required></textarea>
+                    </div>
 
-    <?php if (!empty($mensaje)): ?>
-      <p class="mensaje"><?= htmlspecialchars($mensaje) ?></p>
-    <?php endif; ?>
-  </div>
+                    <div class="form-group">
+                        <label for="ubicacion">Ubicación</label>
+                        <input type="text" id="ubicacion" name="ubicacion" placeholder="Ej: Madrid, España / Remoto">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo_contrato">Tipo de Contrato</label>
+                        <select id="tipo_contrato" name="tipo_contrato">
+                            <option value="Tiempo completo">Tiempo completo</option>
+                            <option value="Medio tiempo">Medio tiempo</option>
+                            <option value="Temporal">Temporal</option>
+                            <option value="Prácticas">Prácticas</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Publicar Oferta</span>
+                        <span class="btn-icon">🚀</span>
+                    </button>
+                </form>
+
+                <!-- Mensaje de resultado -->
+                <?php if (!empty($mensaje)): ?>
+                    <div class="mensaje <?= $tipo_mensaje ?>">
+                        <?= htmlspecialchars($mensaje) ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        // Cerrar sidebar al cambiar tamaño de ventana
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 968) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -18,28 +18,28 @@ try {
     $stmt->execute([$userId]);
     $misPostulaciones = $stmt->fetchColumn();
     
-    // Verificar si tiene perfil completo
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM perfilusuario WHERE IdUsuario = ? AND Cedula IS NOT NULL AND Telefono IS NOT NULL");
-    $stmt->execute([$userId]);
-    $perfilCompleto = $stmt->fetchColumn() > 0;
-    
     // Postulaciones recientes (últimas 5)
     $stmt = $pdo->prepare("
-        SELECT s.*, p.Titulo, p.Empresa, s.FechaSolicitud 
+        SELECT s.*, p.Titulo, p.Empresa, s.FechaEnvio as FechaSolicitud 
         FROM solicitudempleo s 
-        JOIN puestodetrabajo p ON s.IdPuesto = p.IdPuesto 
+        JOIN puestodetrabajo p ON s.IdPuestoTrabajo = p.IdPuesto 
         WHERE s.IdUsuario = ? 
-        ORDER BY s.FechaSolicitud DESC 
+        ORDER BY s.FechaEnvio DESC 
         LIMIT 5
     ");
     $stmt->execute([$userId]);
     $postulacionesRecientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
+    // Invitaciones pendientes
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM invitaciones WHERE IdCandidato = ?");
+    $stmt->execute([$userId]);
+    $invitacionesPendientes = $stmt->fetchColumn();
+    
 } catch (PDOException $e) {
     $ofertasActivas = 0;
     $misPostulaciones = 0;
-    $perfilCompleto = false;
     $postulacionesRecientes = [];
+    $invitacionesPendientes = 0;
 }
 
 // Función para obtener tiempo relativo
@@ -88,6 +88,9 @@ function tiempoRelativo($fecha) {
     <li class="<?= basename($_SERVER['PHP_SELF']) == 'ver_ofertas.php' ? 'active' : '' ?>">
       <a href="ver_ofertas.php">Ofertas</a>
     </li>
+    <li class="<?= basename($_SERVER['PHP_SELF']) == 'invitaciones.php' ? 'active' : '' ?>">
+      <a href="invitaciones.php">Invitaciones✉️</a>
+    </li>
     <li class="<?= basename($_SERVER['PHP_SELF']) == 'solicitudes.php' ? 'active' : '' ?>">
       <a href="solicitudes.php">Solicitudes</a>
     </li>
@@ -124,18 +127,11 @@ function tiempoRelativo($fecha) {
         <p class="description">Total de postulaciones que has realizado</p>
       </div>
 
-      <div class="stat-card perfil">
-        <div class="icon"><?= $perfilCompleto ? '✅' : '⚠️' ?></div>
-        <h3>Estado del Perfil</h3>
-        <div class="number"><?= $perfilCompleto ? '100%' : '50%' ?></div>
-        <p class="description"><?= $perfilCompleto ? 'Perfil completo' : 'Completa tu perfil para más oportunidades' ?></p>
-      </div>
-
-      <div class="stat-card notificaciones">
-        <div class="icon">🔔</div>
-        <h3>Notificaciones</h3>
-        <div class="number"><?= count($postulacionesRecientes) ?></div>
-        <p class="description">Actividades recientes en tu cuenta</p>
+      <div class="stat-card invitaciones">
+        <div class="icon">✉️</div>
+        <h3>Invitaciones</h3>
+        <div class="number"><?= $invitacionesPendientes ?></div>
+        <p class="description">Invitaciones de empresas para ti</p>
       </div>
     </div>
 
@@ -153,14 +149,14 @@ function tiempoRelativo($fecha) {
           <div class="label">Mi Perfil</div>
         </a>
         
+        <a href="invitaciones.php" class="action-button">
+          <div class="icon">✉️</div>
+          <div class="label">Mis Invitaciones</div>
+        </a>
+        
         <a href="solicitudes.php" class="action-button">
           <div class="icon">📋</div>
           <div class="label">Mis Solicitudes</div>
-        </a>
-        
-        <a href="ver_ofertas.php?destacadas=1" class="action-button">
-          <div class="icon">⭐</div>
-          <div class="label">Ofertas Destacadas</div>
         </a>
       </div>
     </div>
@@ -177,7 +173,7 @@ function tiempoRelativo($fecha) {
               Postulación a <?= htmlspecialchars($postulacion['Titulo']) ?>
             </div>
             <div class="activity-time">
-              <?= htmlspecialchars($postulacion['Empresa']) ?> • <?= tiempoRelativo($postulacion['FechaSolicitud']) ?>
+              <?= isset($postulacion['Empresa']) ? htmlspecialchars($postulacion['Empresa']) . ' • ' : '' ?><?= tiempoRelativo($postulacion['FechaSolicitud']) ?>
             </div>
           </div>
         </div>
@@ -193,19 +189,6 @@ function tiempoRelativo($fecha) {
           <div class="activity-time">Explora las ofertas disponibles y postúlate a las que más te interesen</div>
         </div>
       </div>
-    </div>
-    <?php endif; ?>
-
-    <?php if (!$perfilCompleto): ?>
-    <!-- Mensaje de perfil incompleto -->
-    <div style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e); color: #2d3436; padding: 25px; border-radius: 15px; margin-top: 20px; box-shadow: 0 8px 30px rgba(253, 203, 110, 0.3);">
-      <h3 style="margin: 0 0 10px 0; display: flex; align-items: center; gap: 10px;">
-        ⚡ ¡Potencia tu perfil!
-      </h3>
-      <p style="margin: 0; line-height: 1.6;">
-        Completa tu información personal para aumentar tus posibilidades de ser contactado por empleadores. 
-        <a href="perfil.php" style="color: #2d3436; font-weight: 600; text-decoration: underline;">Completar ahora</a>
-      </p>
     </div>
     <?php endif; ?>
   </div>

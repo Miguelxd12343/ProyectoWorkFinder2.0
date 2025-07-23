@@ -501,16 +501,27 @@ if ($perfil && $perfil['Edad']) {
   </script>
 </head>
 <body>
-  <div class="sidebar">
-    <h2><a href="../index.html" class="logo-link">WorkFinderPro</a></h2>
-    <ul>
-      <li><a href="dashboard_usuario.php">Inicio</a></li>
-      <li class="active"><a href="perfil.php">Perfil</a></li>
-      <li><a href="ver_ofertas.php">Ofertas</a></li>
-      <li><a href="solicitudes.php">Solicitudes</a></li>
-      <li><a href="logout.php">Cerrar sesión</a></li>
-    </ul>
-  </div>
+<div class="sidebar">
+  <h2><a href="../index.html" class="logo-link">WorkFinderPro</a></h2>
+  <ul>
+    <li class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard_usuario.php' ? 'active' : '' ?>">
+      <a href="dashboard_usuario.php">Inicio</a>
+    </li>
+    <li class="<?= basename($_SERVER['PHP_SELF']) == 'perfil.php' ? 'active' : '' ?>">
+      <a href="perfil.php">Perfil</a>
+    </li>
+    <li class="<?= basename($_SERVER['PHP_SELF']) == 'ver_ofertas.php' ? 'active' : '' ?>">
+      <a href="ver_ofertas.php">Ofertas</a>
+    </li>
+    <li class="<?= basename($_SERVER['PHP_SELF']) == 'invitaciones.php' ? 'active' : '' ?>">
+      <a href="invitaciones.php">Invitaciones✉️</a>
+    </li>
+    <li class="<?= basename($_SERVER['PHP_SELF']) == 'solicitudes.php' ? 'active' : '' ?>">
+      <a href="solicitudes.php">Solicitudes</a>
+    </li>
+    <li><a href="logout.php">Cerrar sesión</a></li>
+  </ul>
+</div>
 
   <div class="main">
     <div class="perfil-container">
