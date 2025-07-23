@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crear Oferta - WorkFinderPro</title>
   <link rel="stylesheet" href="../CSS/crear_oferta.css">
+  <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
     <!-- Botón toggle para móviles -->

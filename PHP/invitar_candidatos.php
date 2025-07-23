@@ -96,6 +96,7 @@ function calcularEdad($fechaNacimiento) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invitar Candidatos - WorkFinderPro</title>
     <link rel="stylesheet" href="../CSS/dashboard_empresa.css">
+    <link rel="icon" href="images/imagesolologo.png" type="image/png">
     
     <script>
         window.addEventListener("pageshow", function (event) {

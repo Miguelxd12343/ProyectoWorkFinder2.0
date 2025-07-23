@@ -19,6 +19,7 @@ if ($_SESSION['usuario_rol'] != 2) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ofertas Disponibles - WorkFinderPro</title>
   <link rel="stylesheet" href="../CSS/dashboard_usuario.css" />
+  <link rel="icon" href="images/imagesolologo.png" type="image/png">
   
   <style>
     .ofertas-container {

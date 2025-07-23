@@ -21,6 +21,7 @@ if (!$user) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Actualizar contraseña</title>
   <link rel="stylesheet" href="../CSS/reset_password.css">
+  <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
   <div class="mensaje-container">

@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <title>Editar Usuario</title>
   <link rel="stylesheet" href="../CSS/formulario_admin.css">
+  <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
   <div class="form-container">

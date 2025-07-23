@@ -16,18 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $_POST['username'] ?? '';
     $pass = $_POST['password'] ?? '';
 
-    echo "Email ingresado: " . htmlspecialchars($user) . "<br>";
-    echo "Contraseña ingresada: " . htmlspecialchars($pass) . "<br>";
+    
 
     $stmt = $pdo->prepare("SELECT IdUsuario, Contrasena, Nombre, IdRol FROM usuario WHERE Email = ?");
     $stmt->execute([$user]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$usuario) {
-    die("Usuario no encontrado");
-    } elseif (!password_verify($pass, $usuario['Contrasena'])) {
-    die("Contraseña incorrecta");
-    }
+    
 
     if ($usuario && password_verify($pass, $usuario['Contrasena'])) {
         $_SESSION['usuario_id'] = $usuario['IdUsuario'];
@@ -63,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WORKFINDERPRO Login</title>
   <link rel="stylesheet" href="../CSS/styles_login.css">
+  <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
   <div class="container">

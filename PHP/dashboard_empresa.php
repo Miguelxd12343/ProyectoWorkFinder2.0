@@ -60,6 +60,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Empresa - WorkFinderPro</title>
     <link rel="stylesheet" href="../CSS/dashboard_empresa.css">
+    <link rel="icon" href="images/imagesolologo.png" type="image/png">
     <script>
         window.addEventListener("pageshow", function (event) {
             if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {

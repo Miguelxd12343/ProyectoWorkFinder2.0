@@ -35,8 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ver Ofertas Publicadas</title>
     <link rel="stylesheet" href="../CSS/ver_ofertas_empresa.css">
+    <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
     <div class="container">
