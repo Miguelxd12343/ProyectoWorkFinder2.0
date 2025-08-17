@@ -221,3 +221,18 @@ nav {
   margin-top: 30px;
   font-size: 14px;
 }
+
+/* ==== Encabezado que sigue al usuario (mínimo cambio) ==== */
+header {
+  position: sticky; /* mantiene su espacio y se “pega” al llegar al top */
+  top: 0;
+  z-index: 1000; /* encima del contenido */
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,.08);
+}
+

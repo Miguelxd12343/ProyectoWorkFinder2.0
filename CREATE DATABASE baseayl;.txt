@@ -30,6 +30,40 @@ CREATE TABLE usuario (
     FOREIGN KEY (IdRol) REFERENCES rol(IdRol) ON DELETE CASCADE
 );
 
+
+DELIMITER //
+
+CREATE PROCEDURE RegistrarUsuario (
+    IN p_Nombre VARCHAR(100),
+    IN p_Email VARCHAR(100),
+    IN p_Contrasena VARCHAR(255),
+    IN p_IdRol INT,
+    IN p_DireccionEmpresa VARCHAR(255),
+    IN p_IdentificacionFiscal VARCHAR(50)
+)
+BEGIN
+    IF p_IdRol = 1 THEN
+        INSERT INTO usuario (Nombre, Email, Contrasena, IdRol, DireccionEmpresa, IdentificacionFiscal)
+        VALUES (p_Nombre, p_Email, p_Contrasena, p_IdRol, p_DireccionEmpresa, p_IdentificacionFiscal);
+    ELSE
+        INSERT INTO usuario (Nombre, Email, Contrasena, IdRol)
+        VALUES (p_Nombre, p_Email, p_Contrasena, p_IdRol);
+    END IF;
+END //
+
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE sp_LoginUsuario(IN p_email VARCHAR(100))
+BEGIN
+    SELECT IdUsuario, Contrasena, Nombre, IdRol
+    FROM usuario
+    WHERE Email = p_email;
+END;
+//
+DELIMITER ;
+
 -- Tabla de hojas de vida (para candidatos)
 CREATE TABLE hojadevida (
     IdHojaDeVida INT AUTO_INCREMENT PRIMARY KEY,
