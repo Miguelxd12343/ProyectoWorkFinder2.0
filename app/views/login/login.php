@@ -14,7 +14,7 @@
       <img src="../images/imagesolologo.png" class="logo" alt="Logo">
       <h2>WORKFINDERPRO</h2>
       <h3>Login</h3>
-      <form id="loginForm" method="POST" action="login.php">
+      <form id="loginForm" method="POST" action="<?= URLROOT ?>/Login/autenticar">
         <label for="email">Email - correo</label>
         <input type="email" id="email" name="username" placeholder="Ingrese su correo" required>
 

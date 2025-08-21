@@ -1,41 +1,45 @@
 <?php
-// Cargar configuración
-require_once 'app/config/config.php';
+require_once __DIR__ . '/app/config/config.php';
 
-// Autocarga de clases (controladores, modelos)
-spl_autoload_register(function ($className) {
-    $path = 'app/libraries/' . $className . '.php';
-    if (file_exists($path)) {
-        require_once $path;
+// Autoload para MODELOS y LIBRERÍAS (NO controllers)
+spl_autoload_register(function ($class) {
+    $dirs = [__DIR__ . '/app/libraries/', __DIR__ . '/app/models/'];
+    foreach ($dirs as $dir) {
+        $file = $dir . $class . '.php';
+        if (is_file($file)) { require_once $file; return; }
     }
 });
 
-// Enrutamiento básico
-$url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'Home/index';
+// Enrutamiento tipo /Controlador/metodo/arg1/arg2
+$url = $_GET['url'] ?? 'Home/index';
+$url = trim($url, '/');
 $url = filter_var($url, FILTER_SANITIZE_URL);
-$params = explode('/', $url);
+$parts = explode('/', $url);
 
-// Determinar controlador, método y parámetros
-$controllerName = !empty($params[0]) ? ucfirst($params[0]) . 'Controller' : 'HomeController';
-$methodName = isset($params[1]) ? $params[1] : 'index';
-$arguments = array_slice($params, 2);
+$controllerName = ucfirst($parts[0]) . 'Controller';
+$methodName     = $parts[1] ?? 'index';
+$args           = array_slice($parts, 2);
 
-// Ruta del controlador
-$controllerPath = 'app/controllers/' . $controllerName . '.php';
-
-if (file_exists($controllerPath)) {
-    require_once $controllerPath;
-    $controller = new $controllerName();
-
-    if (method_exists($controller, $methodName)) {
-        call_user_func_array([$controller, $methodName], $arguments);
-    } else {
-        // Método no encontrado
-        http_response_code(404);
-        echo "Método '$methodName' no encontrado en el controlador '$controllerName'.";
-    }
-} else {
-    // Controlador no encontrado
+$controllerPath = __DIR__ . '/app/controllers/' . $controllerName . '.php';
+if (!is_file($controllerPath)) {
     http_response_code(404);
     echo "Controlador '$controllerName' no encontrado.";
+    exit;
 }
+require_once $controllerPath;
+
+if (!class_exists($controllerName)) {
+    http_response_code(500);
+    echo "Clase '$controllerName' no definida en $controllerPath.";
+    exit;
+}
+
+$controller = new $controllerName();
+
+if (!method_exists($controller, $methodName)) {
+    http_response_code(404);
+    echo "Método '$methodName' no encontrado en '$controllerName'.";
+    exit;
+}
+
+call_user_func_array([$controller, $methodName], $args);

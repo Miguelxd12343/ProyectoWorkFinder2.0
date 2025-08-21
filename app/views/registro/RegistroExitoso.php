@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro Exitoso</title>
+  <link rel="stylesheet" href="/public/css/RegistroExitoso.css">
+  <link rel="icon" href="images/imagesolologo.png" type="image/png">
+</head>
+<body>
+  <div class="mensaje-container">
+    <img src="../images/imagesolologo.png" alt="Logo">
+    <h2>¡Registro Exitoso!</h2>
+    <p>Tu cuenta ha sido creada con éxito.</p>
+    <a href="../PHP/login.php">Iniciar Sesión</a>
+  </div>
+</body>
+</html> 
+

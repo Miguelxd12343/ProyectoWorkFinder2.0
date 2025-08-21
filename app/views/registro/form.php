@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Cuenta - WorkFinderPro</title>
-    <link rel="stylesheet" href="/public/css/styles_signup.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/styles_signup.css">
     <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
-<script src="/public/js/validaciones_signup.js"></script>
-<body>
+<script src="<?= URLROOT ?>/public/js/validaciones_signup.js"></script><body>
     <div class="container">
         <div class="form-box">
             <a href="../index.html">
                 <img src="../images/imagesolologo.png" alt="WorkFinderPro">
             </a>
             <h2>Crear Cuenta</h2>
-            <form id="signupForm" method="POST" action="../PHP/signup.php">
+            <form id="signupForm" method="POST" action="<?= URLROOT ?>/Signup/registrarUsuario">
                 <input type="text" name="nombre" id="nombre" placeholder="Nombre" required>
                 <input type="email" name="email" id="email" placeholder="Correo electrónico" required>
                 <input type="password" name="contrasena" id="password1" placeholder="Contraseña" required>
