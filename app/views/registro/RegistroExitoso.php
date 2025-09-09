@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Registro Exitoso</title>
-  <link rel="stylesheet" href="/public/css/RegistroExitoso.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/RegistroExitoso.css">
   <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
@@ -12,7 +12,7 @@
     <img src="../images/imagesolologo.png" alt="Logo">
     <h2>¡Registro Exitoso!</h2>
     <p>Tu cuenta ha sido creada con éxito.</p>
-    <a href="../PHP/login.php">Iniciar Sesión</a>
+    <a href="<?= URLROOT ?>/Login/index">Iniciar Sesión</a>
   </div>
 </body>
 </html> 

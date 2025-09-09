@@ -4,7 +4,6 @@ class SessionManager {
 
     public function __construct($timeout = 900) {
         $this->timeout = $timeout;
-        session_start();
         $this->checkSessionTimeout();
     }
 
@@ -27,7 +26,7 @@ class SessionManager {
     public function checkSessionTimeout() {
         if (isset($_SESSION['last_activity']) && time() - $_SESSION['last_activity'] > $this->timeout) {
             $this->logout();
-            header("Location: /Login?timeout=1");
+            header("Location: " . URLROOT . "/Login/index?timeout=1");
             exit;
         } else {
             $_SESSION['last_activity'] = time();

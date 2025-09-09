@@ -29,7 +29,7 @@ class LoginController {
 
             switch ((int)$usuario['IdRol']) {
                 case 1: header('Location: ' . URLROOT . '/Empresa/dashboard'); break;
-                case 2: header('Location: ' . URLROOT . '/Usuario/dashboard'); break;
+                case 2: header('Location: ' . URLROOT . '/Candidato/dashboard'); break;
                 case 3: header('Location: ' . URLROOT . '/Admin/dashboard');   break;
                 default: header('Location: ' . URLROOT . '/Login/index?error=rol');
             }

@@ -1,42 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const rolSelect = document.getElementById('rol');
-    const empresaExtra = document.getElementById('empresaExtra');
-    const direccionEmpresa = document.getElementById('direccion_empresa');
-    const identificacionFiscal = document.getElementById('identificacion_fiscal');
-    const form = document.getElementById('signupForm');
+    const form = document.getElementById('signupEmpresaForm');
 
     // Crear modal para errores
     createErrorModal();
 
-    rolSelect.addEventListener('change', function () {
-        if (this.value === '1') {
-            empresaExtra.style.display = 'block';
-            direccionEmpresa.required = true;
-            identificacionFiscal.required = true;
-        } else {
-            empresaExtra.style.display = 'none';
-            direccionEmpresa.required = false;
-            identificacionFiscal.required = false;
-        }
-    });
-
     form.addEventListener('submit', function(e) {
-        const name = document.getElementById('nombre').value.trim();
+        const nombreEmpresa = document.getElementById('nombre_empresa').value.trim();
         const email = document.getElementById('email').value.trim();
         const password1 = document.getElementById('password1').value;
         const password2 = document.getElementById('password2').value;
+        const direccion = document.getElementById('direccion').value.trim();
+        const nitCif = document.getElementById('nit_cif').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
 
         // Validar campos vacíos
-        if (!name || !email || !password1 || !password2) {
+        if (!nombreEmpresa || !email || !password1 || !password2 || !direccion || !nitCif || !telefono) {
             showError("Por favor, completa todos los campos obligatorios.");
-            e.preventDefault();
-            return;
-        }
-
-        // Validar nombre solo letras
-        const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-        if (!nameRegex.test(name)) {
-            showError("El nombre solo puede contener letras y espacios.");
             e.preventDefault();
             return;
         }
@@ -45,6 +24,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             showError("Por favor, ingresa un correo electrónico válido.");
+            e.preventDefault();
+            return;
+        }
+
+        // Validar teléfono
+        const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+        if (!phoneRegex.test(telefono)) {
+            showError("Por favor, ingresa un número de teléfono válido.");
             e.preventDefault();
             return;
         }
@@ -69,22 +56,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (password.length < 6) {
             return "La contraseña debe tener al menos 6 caracteres.";
         }
-
         if (!/[a-z]/.test(password)) {
             return "La contraseña debe contener al menos una letra minúscula.";
         }
-
         if (!/[A-Z]/.test(password)) {
             return "La contraseña debe contener al menos una letra mayúscula.";
         }
-
         if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
             return "La contraseña debe contener al menos un símbolo especial (!@#$%^&* etc.).";
         }
-
-        return null; // Sin errores
+        return null;
     }
 
+    // Mismas funciones de modal que el signup de candidatos
     function createErrorModal() {
         const modalHTML = `
             <div id="errorModal" class="modal-overlay" style="display: none;">
@@ -115,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('errorModal').style.display = 'none';
     }
 
-    // Cerrar modal con ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeErrorModal();

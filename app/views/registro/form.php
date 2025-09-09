@@ -7,34 +7,41 @@
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/styles_signup.css">
     <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
-<script src="<?= URLROOT ?>/public/js/validaciones_signup.js"></script><body>
+
+<body>
     <div class="container">
         <div class="form-box">
-            <a href="../index.html">
-                <img src="../images/imagesolologo.png" alt="WorkFinderPro">
+            <a href="<?= URLROOT ?>">
+                <img src="<?= URLROOT ?>/images/imagesolologo.png" alt="WorkFinderPro">
             </a>
             <h2>Crear Cuenta</h2>
+            
+            <?php if (isset($error)): ?>
+                <div class="error-message">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
             <form id="signupForm" method="POST" action="<?= URLROOT ?>/Signup/registrarUsuario">
-                <input type="text" name="nombre" id="nombre" placeholder="Nombre" required>
+                <input type="text" name="nombre" id="nombre" placeholder="Nombre completo" required>
                 <input type="email" name="email" id="email" placeholder="Correo electrónico" required>
                 <input type="password" name="contrasena" id="password1" placeholder="Contraseña" required>
                 <input type="password" name="confirm_password" id="password2" placeholder="Confirmar Contraseña" required>
+                
+                <!-- Campo oculto para rol candidato -->
+                <input type="hidden" name="rol" value="2">
 
-                <select name="rol" id="rol" required>
-                    <option value="">Seleccione un rol</option>
-                    <option value="1">Empresa</option>
-                    <option value="2">Candidato</option>
-                </select>
-
-                <!-- Campos adicionales solo para Empresa -->
-                <div id="empresaExtra" style="display: none;">
-                    <input type="text" name="direccion_empresa" id="direccion_empresa" placeholder="Dirección de la empresa">
-                    <input type="text" name="identificacion_fiscal" id="identificacion_fiscal" placeholder="NIT o CIF">
-                </div>
-
-                <button type="submit">Crear</button>
+                <button type="submit">Crear Cuenta</button>
             </form>
+
+            <!-- Enlaces de navegación -->
+            <div class="form-links">
+                <p>¿Eres una empresa? <a href="<?= URLROOT ?>/SignupEmpresa/mostrarFormulario" class="link-empresa">Regístrate aquí</a></p>
+                <p>¿Ya tienes cuenta? <a href="<?= URLROOT ?>/Login/index">Iniciar Sesión</a></p>
+            </div>
         </div>
     </div>
+
+    <script src="<?= URLROOT ?>/public/js/validaciones_signup.js"></script>
 </body>
 </html>

@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/app/config/config.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Autoload para MODELOS y LIBRERÍAS (NO controllers)
 spl_autoload_register(function ($class) {
     $dirs = [__DIR__ . '/app/libraries/', __DIR__ . '/app/models/'];
@@ -43,3 +47,4 @@ if (!method_exists($controller, $methodName)) {
 }
 
 call_user_func_array([$controller, $methodName], $args);
+

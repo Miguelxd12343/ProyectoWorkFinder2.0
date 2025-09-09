@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WORKFINDERPRO Login</title>
-  <link rel="stylesheet" href="../CSS/styles_login.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>css/styles_login.css">
   <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
   <div class="container">
     <div class="login-box">
-      <a href="../index.html" class="back-arrow">←</a>
+      <a href="<?= URLROOT ?>" class="back-arrow">←</a>
       <img src="../images/imagesolologo.png" class="logo" alt="Logo">
       <h2>WORKFINDERPRO</h2>
       <h3>Login</h3>
