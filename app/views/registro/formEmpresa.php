@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Empresa - WorkFinderPro</title>
     <link rel="stylesheet" href="<?= URLROOT ?>/public/css/styles_signup.css">
-    <link rel="icon" href="images/imagesolologo.png" type="image/png">
+    <link rel="icon" href=../public/images/imagesolologo.png type="image/png">
 </head>
 <body>
     <div class="container">
         <div class="form-box empresa-form">
             <a href="<?= URLROOT ?>">
-                <img src="<?= URLROOT ?>/images/imagesolologo.png" alt="WorkFinderPro">
+                <img src="<?= URLROOT ?>../public/images/imagesolologo.png" alt="WorkFinderPro">
             </a>
             <h2>Registro de Empresa</h2>
             

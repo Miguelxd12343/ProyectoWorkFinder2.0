@@ -19,9 +19,13 @@ class MailService {
         $this->mail->Host = 'smtp.gmail.com';
         $this->mail->SMTPAuth = true;
         $this->mail->Username = 'sebastianmatth06@gmail.com';
-        $this->mail->Password = 'lrxs cndd pwrw gqrz';
-        $this->mail->SMTPSecure = 'tls';
+        $this->mail->Password = 'lrxs cndd pwrw gqrz'; // ⚠️ Usa clave de aplicación, no la normal
+        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mail->Port = 587;
+
+        // Configuración general
+        $this->mail->CharSet = 'UTF-8';   // ✅ Soluciona los caracteres raros
+        $this->mail->Encoding = 'base64'; // ✅ Mejor compatibilidad con acentos
         $this->mail->setFrom('sebastianmatth06@gmail.com', 'WorkFinderPro');
         $this->mail->isHTML(true);
     }
@@ -68,7 +72,7 @@ class MailService {
     public function enviarBienvenida($email, $nombre, $tipo): bool {
         try {
             $tipoTexto = $tipo == 1 ? 'Empresa' : 'Candidato';
-            $dashboard = $tipo == 1 ? 'empresa' : 'candidato';
+            
             
             $mensaje = "
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
@@ -123,4 +127,3 @@ class MailService {
         }
     }
 }
-?>
