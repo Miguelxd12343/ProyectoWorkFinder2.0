@@ -80,7 +80,7 @@ function tiempoRelativo($fecha) {
 </head>
 <body>
 <div class="sidebar">
-    <h2><a href="<?= URLROOT ?>/index.html" class="logo-link">WorkFinderPro</a></h2>
+    <h2><a href="<?= URLROOT ?>" class="logo-link">WorkFinderPro</a></h2>
     <ul>
         <li class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>">
             <a href="<?= URLROOT ?>/Candidato/dashboard">Inicio</a>

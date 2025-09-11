@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkFinderPro</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>css/styles_index.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/styles_index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="images/imagesolologo.png" type="image/png">
     <style>
@@ -33,7 +33,7 @@
     <main>
         <!-- Inicio -->
         <section id="inicio" class="hero">
-            <img src="images/729 1.png" alt="Personas en una oficina">
+            <img src="<?= URLROOT ?>/public/images/729 1.png" alt="Personas en una oficina">
             <div class="hero-content">
                 <h1>Encuentra el mejor empleo</h1>
                 <button class="upload-btn" onclick="window.location.href='<?= URLROOT ?>'">

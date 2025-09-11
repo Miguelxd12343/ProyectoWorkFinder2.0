@@ -1091,3 +1091,11 @@ body {
 .btn-filtrar:hover {
   background: linear-gradient(135deg, #2575fc, #6a11cb);
 }
+
+.avatar-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}

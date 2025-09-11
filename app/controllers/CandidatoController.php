@@ -60,9 +60,9 @@ class CandidatoController {
     }
 
 
-    public function perfil() {
+  public function perfil() {
     $this->verificarSesion();
-    require_once __DIR__ . '/../views/candidato/perfil.php';
+    
     $userId = $_SESSION['usuario_id'];
     $userName = $_SESSION['usuario_nombre'];
 
@@ -74,6 +74,20 @@ class CandidatoController {
     $mensaje = "";
     $tipo_mensaje = "";
     $errorCedula = "";
+    $edadCalculada = "";
+    
+    // Obtener datos del usuario desde la tabla usuario para validar cédula
+    $usuarioData = $perfilModel->obtenerUsuario($userId);
+    $cedulaOriginal = $usuarioData['IdentificacionFiscal'] ?? null;
+
+    // Calcular edad si existe fecha de nacimiento
+    if ($perfil && $perfil['Edad']) {
+        $fechaNac = new DateTime($perfil['Edad']);
+        $edadCalculada = $fechaNac->diff(new DateTime())->y . " años";
+    }
+
+    // Determinar qué campos bloquear
+    $bloquearCamposBasicos = !$esNuevoPerfil;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = [
@@ -84,53 +98,112 @@ class CandidatoController {
             'direccion' => $_POST['direccion'] ?? '',
             'empleo_deseado' => $_POST['empleo_deseado'] ?? '',
             'descripcion' => $_POST['descripcion'] ?? '',
-            'cvPath' => $perfil['HojaDeVidaPath'] ?? null
+            'cvPath' => $perfil['HojaDeVidaPath'] ?? null,
+            'fotoPath' => $perfil['FotoPerfilPath'] ?? null
         ];
 
         // Validación edad >= 18
-        $fechaNac = new DateTime($data['edad']);
-        $edad = $fechaNac->diff(new DateTime())->y;
+        if ($data['edad']) {
+            $fechaNac = new DateTime($data['edad']);
+            $edad = $fechaNac->diff(new DateTime())->y;
 
-        if ($edad < 18) {
-            $mensaje = "Debes ser mayor de edad.";
-            $tipo_mensaje = 'error';
+            if ($edad < 18) {
+                $mensaje = "Debes ser mayor de edad.";
+                $tipo_mensaje = 'error';
+            }
+        }
+
+        // Validar que la cédula coincida con la del registro (solo para nuevos perfiles)
+        if ($esNuevoPerfil && $cedulaOriginal && $data['cedula'] !== $cedulaOriginal) {
+            $errorCedula = "La cédula debe coincidir con la registrada en tu cuenta.";
         } elseif ($perfilModel->existeCedula($data['cedula'], $userId)) {
             $errorCedula = "La cédula ya está registrada.";
-        } else {
-            // Subida de archivo CV
+        }
+
+        // Solo procesar si no hay errores
+        if (!$mensaje && !$errorCedula) {
+            // Subida de foto de perfil
+            if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                $fileType = mime_content_type($_FILES['foto']['tmp_name']);
+                
+                if (in_array($fileType, $allowedTypes) && $_FILES['foto']['size'] <= 2 * 1024 * 1024) {
+                    $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+                    $nombreFoto = "perfil." . $extension;
+                    $carpetaUsuario = __DIR__ . "/../../public/uploads/{$data['cedula']}/";
+                    if (!is_dir($carpetaUsuario)) mkdir($carpetaUsuario, 0777, true);
+                    $rutaFoto = $carpetaUsuario . $nombreFoto;
+                    
+                    if (move_uploaded_file($_FILES['foto']['tmp_name'], $rutaFoto)) {
+                        $data['fotoPath'] = "uploads/{$data['cedula']}/$nombreFoto";
+                    }
+                } else {
+                    $mensaje = "La imagen debe ser JPG o PNG y menor de 2MB.";
+                    $tipo_mensaje = 'error';
+                }
+            }
+
+            // Subida de CV
             if (isset($_FILES['cv']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
                 if ($_FILES['cv']['size'] <= 5 * 1024 * 1024 && mime_content_type($_FILES['cv']['tmp_name']) === 'application/pdf') {
                     $nombreArchivo = "hojadevida.pdf";
                     $carpetaUsuario = __DIR__ . "/../../public/uploads/{$data['cedula']}/";
                     if (!is_dir($carpetaUsuario)) mkdir($carpetaUsuario, 0777, true);
                     $rutaCompleta = $carpetaUsuario . $nombreArchivo;
-                    move_uploaded_file($_FILES['cv']['tmp_name'], $rutaCompleta);
-                    $data['cvPath'] = "uploads/{$data['cedula']}/$nombreArchivo";
+                    
+                    if (move_uploaded_file($_FILES['cv']['tmp_name'], $rutaCompleta)) {
+                        $data['cvPath'] = "uploads/{$data['cedula']}/$nombreArchivo";
+                    }
                 } else {
                     $mensaje = "El archivo debe ser PDF y menor de 5MB.";
                     $tipo_mensaje = 'error';
                 }
             }
 
-            // Guardar en DB
-            if ($esNuevoPerfil) {
-                $perfilModel->crearPerfil($userId, $data);
-                $mensaje = "Perfil creado con éxito.";
-                $tipo_mensaje = 'success';
-            } else {
-                $perfilModel->actualizarPerfil($userId, $data);
-                $mensaje = "Perfil actualizado.";
-                $tipo_mensaje = 'success';
-            }
+            // Guardar en DB solo si no hay errores
+            if (!$mensaje) {
+                if ($esNuevoPerfil) {
+                    $perfilModel->crearPerfil($userId, $data);
+                    $mensaje = "Perfil creado con éxito.";
+                    $tipo_mensaje = 'success';
+                } else {
+                    $perfilModel->actualizarPerfil($userId, $data);
+                    $mensaje = "Perfil actualizado.";
+                    $tipo_mensaje = 'success';
+                }
 
-            $perfil = $perfilModel->obtenerPerfil($userId);
+                // Actualizar datos
+                $perfil = $perfilModel->obtenerPerfil($userId);
+                $esNuevoPerfil = false;
+                $bloquearCamposBasicos = true;
+                
+                if ($perfil && $perfil['Edad']) {
+                    $fechaNac = new DateTime($perfil['Edad']);
+                    $edadCalculada = $fechaNac->diff(new DateTime())->y . " años";
+                }
+            }
         }
     }
 
     $totalSolicitudes = $perfilModel->contarSolicitudes($userId);
 
+    // Datos para la vista
+    $data = [
+        'nombreSesion' => $userName,
+        'mensaje' => $mensaje,
+        'tipo_mensaje' => $tipo_mensaje,
+        'perfil' => $perfil,
+        'esNuevoPerfil' => $esNuevoPerfil,
+        'bloquearCamposBasicos' => $bloquearCamposBasicos,
+        'errorCedula' => $errorCedula,
+        'edadCalculada' => $edadCalculada,
+        'totalSolicitudes' => $totalSolicitudes,
+        'cedulaOriginal' => $cedulaOriginal
+    ];
+
     require_once __DIR__ . '/../views/candidato/perfil.php';
 }
+
     public function ofertas() {
     $this->verificarSesion();
     require_once __DIR__ . '/../views/candidato/ver_ofertas.php';

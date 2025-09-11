@@ -160,3 +160,50 @@ CREATE TABLE invitaciones (
     FOREIGN KEY (IdCandidato) REFERENCES usuario(IdUsuario) ON DELETE CASCADE,
     FOREIGN KEY (IdPuesto) REFERENCES puestodetrabajo(IdPuesto) ON DELETE CASCADE
 );
+
+
+-- Ofertas activas por empresa
+DROP PROCEDURE IF EXISTS sp_get_ofertas_activas_empresa;
+DELIMITER $$
+CREATE PROCEDURE sp_get_ofertas_activas_empresa(IN p_empresaId INT)
+BEGIN
+    SELECT COUNT(*) 
+    FROM puestodetrabajo 
+    WHERE IdUsuario = p_empresaId
+      AND Estado = 'Activa';
+END$$
+DELIMITER ;
+
+-- Solicitudes recibidas por empresa
+DROP PROCEDURE IF EXISTS sp_get_total_solicitudes_empresa;
+DELIMITER $$
+CREATE PROCEDURE sp_get_total_solicitudes_empresa(IN p_empresaId INT)
+BEGIN
+    SELECT COUNT(*) 
+    FROM solicitudempleo s
+    INNER JOIN puestodetrabajo p ON s.IdPuestoTrabajo = p.IdPuesto
+    WHERE p.IdUsuario = p_empresaId;
+END$$
+DELIMITER ;
+
+-- Invitaciones enviadas por empresa
+DROP PROCEDURE IF EXISTS sp_get_invitaciones_empresa;
+DELIMITER $$
+CREATE PROCEDURE sp_get_invitaciones_empresa(IN p_empresaId INT)
+BEGIN
+    SELECT COUNT(*) 
+    FROM invitaciones
+    WHERE IdEmpresa = p_empresaId;
+END$$
+DELIMITER ;
+
+-- Candidatos disponibles
+DROP PROCEDURE IF EXISTS sp_get_candidatos_disponibles;
+DELIMITER $$
+CREATE PROCEDURE sp_get_candidatos_disponibles()
+BEGIN
+    SELECT COUNT(*) 
+    FROM usuario u
+    WHERE u.IdRol = 2; -- 2 = Candidato
+END$$
+DELIMITER ;

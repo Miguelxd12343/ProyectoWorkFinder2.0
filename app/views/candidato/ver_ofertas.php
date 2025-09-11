@@ -32,7 +32,7 @@ if ($_SESSION['usuario_rol'] != 2) {
 </head>
 <body>
 <div class="sidebar">
-  <h2><a href="../index.html" class="logo-link">WorkFinderPro</a></h2>
+  <h2><a href="<?= URLROOT ?>" class="logo-link">WorkFinderPro</a></h2>
   <ul>
     <li class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard_usuario.php' ? 'active' : '' ?>">
       <a href="<?= URLROOT ?>/Candidato/dashboard">Inicio</a>

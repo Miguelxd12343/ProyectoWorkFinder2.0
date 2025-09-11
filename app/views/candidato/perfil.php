@@ -381,7 +381,7 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
   <script src="<?= URLROOT ?>/public/js/perfil_usuario.js"></script>
 <body>
 <div class="sidebar">
-  <h2><a href="../index.html" class="logo-link">WorkFinderPro</a></h2>
+  <h2><a href="<?= URLROOT ?>" class="logo-link">WorkFinderPro</a></h2>
   <ul>
     <li class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard_usuario.php' ? 'active' : '' ?>">
       <a href="<?= URLROOT ?>/Candidato/dashboard">Inicio</a>
@@ -418,54 +418,59 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
       <div class="perfil-content">
         <div class="perfil-sidebar">
           <div class="perfil-avatar">
+            <?php if (!empty($perfil['FotoPerfilPath']) && file_exists(__DIR__ . '/../../public/' . $perfil['FotoPerfilPath'])): ?>
+            <img src="<?= URLROOT ?>/<?= htmlspecialchars($perfil['FotoPerfilPath']) ?>" 
+                 alt="Foto de perfil" class="avatar-image">
+        <?php else: ?>
             <div class="avatar-circle">
-              <?= strtoupper(substr($nombreSesion, 0, 1)) ?>
+                <?= strtoupper(substr($nombreSesion, 0, 1)) ?>
             </div>
-          </div>
-          
-          <div class="perfil-info">
-            <h2><?= htmlspecialchars($nombreSesion) ?></h2>
-            <div class="email">
-              <?= $perfil && $perfil['EmpleoDeseado'] ? htmlspecialchars($perfil['EmpleoDeseado']) : 'Candidato' ?>
-            </div>
-          </div>
+        <?php endif; ?>
+    </div>
+    
+    <div class="perfil-info">
+        <h2><?= htmlspecialchars($nombreSesion) ?></h2>
+        <div class="email">
+            <?= $perfil && $perfil['EmpleoDeseado'] ? htmlspecialchars($perfil['EmpleoDeseado']) : 'Candidato' ?>
+        </div>
+    </div>
 
-          <?php if ($perfil): ?>
-            <div class="perfil-stats">
-              <?php if ($perfil['Cedula']): ?>
+    <?php if ($perfil): ?>
+        <div class="perfil-stats">
+            <?php if ($perfil['Cedula']): ?>
                 <div class="stat-item">
-                  <span class="stat-label">Cédula</span>
-                  <span class="stat-value"><?= htmlspecialchars($perfil['Cedula']) ?></span>
+                    <span class="stat-label">Cédula</span>
+                    <span class="stat-value"><?= htmlspecialchars($perfil['Cedula']) ?></span>
                 </div>
-              <?php endif; ?>
-              
-              <?php if ($edadCalculada): ?>
+            <?php endif; ?>
+            
+            <?php if ($edadCalculada): ?>
                 <div class="stat-item">
-                  <span class="stat-label">Edad</span>
-                  <span class="stat-value"><?= $edadCalculada ?></span>
+                    <span class="stat-label">Edad</span>
+                    <span class="stat-value"><?= $edadCalculada ?></span>
                 </div>
-              <?php endif; ?>
-              
-              <?php if ($perfil['EstadoCivil']): ?>
+            <?php endif; ?>
+            
+            <?php if ($perfil['EstadoCivil']): ?>
                 <div class="stat-item">
-                  <span class="stat-label">Estado Civil</span>
-                  <span class="stat-value"><?= htmlspecialchars($perfil['EstadoCivil']) ?></span>
+                    <span class="stat-label">Estado Civil</span>
+                    <span class="stat-value"><?= htmlspecialchars($perfil['EstadoCivil']) ?></span>
                 </div>
-              <?php endif; ?>
-              
-              <div class="stat-item">
+            <?php endif; ?>
+            
+            <div class="stat-item">
                 <span class="stat-label">Solicitudes</span>
                 <span class="stat-value"><?= $totalSolicitudes ?></span>
-              </div>
             </div>
-          <?php endif; ?>
-
-          <?php if (!empty($perfil['HojaDeVidaPath'])): ?>
-            <a href="<?= htmlspecialchars($perfil['HojaDeVidaPath']) ?>" target="_blank" class="cv-link">
-              📄 Ver Hoja de Vida
-            </a>
-          <?php endif; ?>
         </div>
+    <?php endif; ?>
+
+    <?php if (!empty($perfil['HojaDeVidaPath'])): ?>
+        <a href="<?= URLROOT ?>/<?= htmlspecialchars($perfil['HojaDeVidaPath']) ?>" target="_blank" class="cv-link">
+            📄 Ver Hoja de Vida
+        </a>
+    <?php endif; ?>
+</div>
 
         <div class="perfil-form">
           <div class="form-header">
@@ -523,6 +528,44 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
                   </div>
                 </div>
               </div>
+
+              <div class="form-section">
+    <h3 class="section-title">📸 Foto de Perfil</h3>
+    <div class="form-group">
+        <label class="form-label" for="foto">Subir Foto de Perfil</label>
+        <input type="file" id="foto" name="foto" class="file-input" accept="image/jpeg,image/png,image/jpg">
+        <div class="form-help">
+            Sube una foto en formato JPG o PNG, máximo 2MB.
+        </div>
+    </div>
+</div>
+
+<!-- Campos básicos con bloqueo condicional -->
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label" for="edad">Fecha de Nacimiento *</label>
+        <input type="date" id="edad" name="edad" class="form-input" 
+               value="<?= htmlspecialchars($perfil['Edad'] ?? '') ?>" 
+               <?= $bloquearCamposBasicos ? 'readonly' : '' ?> required>
+        <?php if (!$bloquearCamposBasicos): ?>
+            <div class="form-help">Debes ser mayor de 18 años</div>
+        <?php endif; ?>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label" for="cedula">Cédula de Identidad *</label>
+        <input type="text" id="cedula" name="cedula" 
+               class="form-input <?= $errorCedula ? 'error-field' : '' ?>" 
+               value="<?= htmlspecialchars($perfil['Cedula'] ?? $cedulaOriginal ?? '') ?>" 
+               <?= $bloquearCamposBasicos ? 'readonly' : '' ?> required>
+        <?php if ($errorCedula): ?>
+            <div class="error-msg"><?= $errorCedula ?></div>
+        <?php endif; ?>
+        <?php if (!$bloquearCamposBasicos && $cedulaOriginal): ?>
+            <div class="form-help">Debe coincidir con tu cédula de registro: <?= $cedulaOriginal ?></div>
+        <?php endif; ?>
+    </div>
+</div>
 
               <div class="form-section">
                 <h3 class="section-title">
