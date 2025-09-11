@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . '/../../libraries/Database.php';
+require_once __DIR__ . '/../../libraries/MailService.php';   // <-- ESTA LÍNEA
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/EmpresaAsociada.php';
+
 
 class SignupEmpresaController {
     private $usuario;

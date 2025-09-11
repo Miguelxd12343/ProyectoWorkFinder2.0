@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 ob_start();
-require_once(__DIR__ . '/conexion.php');
+require_once(__DIR__ . '/../libraries/Database.php');
 session_start();
 
 $error = "";
@@ -57,14 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WORKFINDERPRO Login</title>
-  <link rel="stylesheet" href="../CSS/styles_login.css">
-  <link rel="icon" href="images/imagesolologo.png" type="image/png">
+  <link rel="stylesheet" href="../public/css/styles_login.css">
+  <link rel="icon" href="../public/images/imagesolologo.png" type="image/png">
 </head>
 <body>
   <div class="container">
     <div class="login-box">
       <a href="../index.html" class="back-arrow">←</a>
-      <img src="../images/imagesolologo.png" class="logo" alt="Logo">
+      <img src="../public/images/imagesolologo.png" class="logo" alt="Logo">
       <h2>WORKFINDERPRO</h2>
       <h3>Login</h3>
       <form id="loginForm" method="POST" action="login.php">
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php endif; ?>
     </div>
     <div class="image-section">
-      <img src="../images/4671 1.png" alt="Entrevista laboral">
+      <img src="../public/images/4671 1.png" alt="Entrevista laboral">
     </div>
   </div>
 </body>

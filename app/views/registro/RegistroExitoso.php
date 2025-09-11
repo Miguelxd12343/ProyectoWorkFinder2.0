@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WorkFinderPro - Registro Exitoso</title>
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/RegistroExitoso.css">
-  <link rel="icon" href="images/imagesolologo.png" type="image/png">
+  <link rel="icon" href=../public/images/imagesolologo.png type="image/png">
 </head>
 <body>
   <div class="mensaje-container">
-    <img src="../images/imagesolologo.png" alt="Logo">
+    <img src="../public/images/imagesolologo.png" alt="Logo">
     <h2>¡Registro Exitoso!</h2>
     <p>Tu cuenta ha sido creada con éxito.</p>
     <a href="<?= URLROOT ?>/Login/index">Iniciar Sesión</a>
