@@ -19,7 +19,7 @@ body {
 }
 
 .mensaje-container img {
-  width: 60px;
+  width: 85px;
   margin-bottom: 20px;
 }
 
@@ -33,16 +33,5 @@ body {
   color: #333;
 }
 
-.mensaje-container a {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #0077cc;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
 
-.mensaje-container a:hover {
-  background-color: #005fa3;
-}
+

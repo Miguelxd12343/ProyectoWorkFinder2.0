@@ -86,7 +86,7 @@ class Usuario {
 
 // Agregar este método a tu clase Usuario existente
 
-public function registrarEmpresa(array $datos): int|bool {
+    public function registrarEmpresa(array $datos): int|bool {
     try {
         // Validar datos
         $errores = $this->validarDatos($datos);
@@ -114,6 +114,59 @@ public function registrarEmpresa(array $datos): int|bool {
         return false;
     } catch (Exception $e) {
         throw $e;
+    }
+}
+
+    public function crearTokenReset($email): array|bool {
+    try {
+        $stmt = $this->pdo->prepare("SELECT IdUsuario FROM usuario WHERE Email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if (!$user) {
+            return false;
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $expiry = date("Y-m-d H:i:s", time() + 3600); // 1 hora
+
+        $stmt = $this->pdo->prepare("UPDATE usuario SET reset_token = ?, token_expiry = ? WHERE Email = ?");
+        $stmt->execute([$token, $expiry, $email]);
+
+        return ['token' => $token, 'expiry' => $expiry];
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+    public function validarTokenReset($token): array|bool {
+    try {
+        $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE reset_token = ? AND token_expiry > NOW()");
+        $stmt->execute([$token]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+    public function actualizarContrasenaConToken($token, $nuevaContrasena): bool {
+    try {
+        $usuario = $this->validarTokenReset($token);
+        if (!$usuario) {
+            return false;
+        }
+
+        $hashContrasena = password_hash($nuevaContrasena, PASSWORD_DEFAULT);
+
+        $stmt = $this->pdo->prepare("
+            UPDATE usuario 
+            SET Contrasena = ?, reset_token = NULL, token_expiry = NULL 
+            WHERE reset_token = ?
+        ");
+        
+        return $stmt->execute([$hashContrasena, $token]);
+    } catch (PDOException $e) {
+        return false;
     }
 }
 

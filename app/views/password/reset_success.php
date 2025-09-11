@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WorkFinderPro - Registro Exitoso</title>
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/RegistroExitoso.css">
+  <title>WorkFinderPro - Contraseña Actualizada</title>
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/email_sent.css">
   <link rel="icon" href="images/imagesolologo.png" type="image/png">
 </head>
 <body>
   <div class="mensaje-container">
     <img src="../images/imagesolologo.png" alt="Logo">
-    <h2>¡Registro Exitoso!</h2>
-    <p>Tu cuenta ha sido creada con éxito.</p>
+    <h2>¡Contraseña actualizada!</h2>
+    <p>Ya puedes iniciar sesión con tu nueva contraseña.</p>
     <a href="<?= URLROOT ?>/Login/index">Iniciar Sesión</a>
   </div>
 </body>
-</html> 
+</html> <!--Pagina Fundionando :v -->
 

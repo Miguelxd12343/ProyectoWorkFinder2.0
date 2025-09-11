@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../libraries/SessionManager.php';
+require_once __DIR__ . '/../../libraries/SessionManager.php';
 
 class EmpresaController {
     private $session;
@@ -15,7 +15,6 @@ class EmpresaController {
     }
 
     public function dashboard() {
-        // Aquí cargas la vista del dashboard de Empresa
         require_once __DIR__ . '/../views/empresa/dashboard.php';
     }
 }

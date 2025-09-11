@@ -84,22 +84,22 @@
     <div class="quick-actions">
       <h2>🚀 Acciones Rápidas</h2>
       <div class="actions-grid">
-        <a href="ver_ofertas.php" class="action-button">
+        <a href="<?= URLROOT ?>/Candidato/ofertas" class="action-button">
           <div class="icon">🔍</div>
           <div class="label">Buscar Ofertas</div>
         </a>
         
-        <a href="perfil.php" class="action-button">
+        <a href="<?= URLROOT ?>/Candidato/perfil" class="action-button">
           <div class="icon">👤</div>
           <div class="label">Mi Perfil</div>
         </a>
         
-        <a href="invitaciones.php" class="action-button">
+        <a href="<?= URLROOT ?>/Candidato/invitaciones" class="action-button">
           <div class="icon">✉️</div>
           <div class="label">Mis Invitaciones</div>
         </a>
         
-        <a href="solicitudes.php" class="action-button">
+        <a href="<?= URLROOT ?>/Candidato/postulaciones" class="action-button">
           <div class="icon">📋</div>
           <div class="label">Mis Solicitudes</div>
         </a>

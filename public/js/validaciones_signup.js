@@ -1,69 +1,131 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const rolSelect = document.getElementById('rol');
-    const empresaExtra = document.getElementById('empresaExtra');
-    const direccionEmpresa = document.getElementById('direccion_empresa');
-    const identificacionFiscal = document.getElementById('identificacion_fiscal');
-    const form = document.getElementById('signupForm');
+    const form = document.getElementById('signupForm') || document.getElementById('signupEmpresaForm');
+    if (!form) return;
 
     // Crear modal para errores
     createErrorModal();
 
-    rolSelect.addEventListener('change', function () {
-        if (this.value === '1') {
-            empresaExtra.style.display = 'block';
-            direccionEmpresa.required = true;
-            identificacionFiscal.required = true;
-        } else {
-            empresaExtra.style.display = 'none';
-            direccionEmpresa.required = false;
-            identificacionFiscal.required = false;
+    // Guardar datos del formulario automáticamente
+    const inputs = form.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        // Cargar datos guardados al iniciar
+        if (input.type !== 'password') {
+            const savedValue = localStorage.getItem('form_' + input.name);
+            if (savedValue) {
+                input.value = savedValue;
+            }
         }
+
+        // Guardar datos mientras el usuario escribe
+        input.addEventListener('input', function() {
+            if (this.type !== 'password') {
+                localStorage.setItem('form_' + this.name, this.value);
+            }
+        });
     });
 
     form.addEventListener('submit', function(e) {
-        const name = document.getElementById('nombre').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password1 = document.getElementById('password1').value;
-        const password2 = document.getElementById('password2').value;
+        const formData = new FormData(this);
+        const data = {};
+        
+        // Recopilar todos los datos del formulario
+        for (let [key, value] of formData.entries()) {
+            data[key] = value.trim();
+        }
 
+        // Validaciones según el tipo de formulario
+        let isEmpresa = this.id === 'signupEmpresaForm';
+        
+        if (isEmpresa) {
+            if (!validarFormularioEmpresa(data)) {
+                e.preventDefault();
+                return;
+            }
+        } else {
+            if (!validarFormularioCandidato(data)) {
+                e.preventDefault();
+                return;
+            }
+        }
+
+        // Si llega aquí, todo está correcto, limpiar datos guardados
+        clearSavedData();
+    });
+
+    function validarFormularioCandidato(data) {
         // Validar campos vacíos
-        if (!name || !email || !password1 || !password2) {
+        if (!data.nombre || !data.email || !data.contrasena || !data.confirm_password) {
             showError("Por favor, completa todos los campos obligatorios.");
-            e.preventDefault();
-            return;
+            return false;
         }
 
         // Validar nombre solo letras
         const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-        if (!nameRegex.test(name)) {
+        if (!nameRegex.test(data.nombre)) {
             showError("El nombre solo puede contener letras y espacios.");
-            e.preventDefault();
-            return;
+            return false;
         }
 
         // Validar email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(data.email)) {
             showError("Por favor, ingresa un correo electrónico válido.");
-            e.preventDefault();
-            return;
+            return false;
         }
 
-        // Validar contraseña robusta
-        const passwordError = validarContrasena(password1);
+        // Validar contraseña
+        const passwordError = validarContrasena(data.contrasena);
         if (passwordError) {
             showError(passwordError);
-            e.preventDefault();
-            return;
+            return false;
         }
 
-        // Validar que las contraseñas coincidan
-        if (password1 !== password2) {
+        // Validar que coincidan
+        if (data.contrasena !== data.confirm_password) {
             showError("Las contraseñas no coinciden.");
-            e.preventDefault();
-            return;
+            return false;
         }
-    });
+
+        return true;
+    }
+
+    function validarFormularioEmpresa(data) {
+        // Validar campos vacíos
+        if (!data.nombre_empresa || !data.email || !data.contrasena || 
+            !data.confirm_password || !data.direccion || !data.nit_cif || !data.telefono) {
+            showError("Por favor, completa todos los campos obligatorios.");
+            return false;
+        }
+
+        // Validar email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            showError("Por favor, ingresa un correo electrónico válido.");
+            return false;
+        }
+
+        // Validar teléfono
+        const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+        if (!phoneRegex.test(data.telefono)) {
+            showError("Por favor, ingresa un número de teléfono válido.");
+            return false;
+        }
+
+        // Validar contraseña
+        const passwordError = validarContrasena(data.contrasena);
+        if (passwordError) {
+            showError(passwordError);
+            return false;
+        }
+
+        // Validar que coincidan
+        if (data.contrasena !== data.confirm_password) {
+            showError("Las contraseñas no coinciden.");
+            return false;
+        }
+
+        return true;
+    }
 
     function validarContrasena(password) {
         if (password.length < 6) {
@@ -77,12 +139,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!/[A-Z]/.test(password)) {
             return "La contraseña debe contener al menos una letra mayúscula.";
         }
-
+        
         if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
             return "La contraseña debe contener al menos un símbolo especial (!@#$%^&* etc.).";
         }
+        return null;
+    }
 
-        return null; // Sin errores
+    function clearSavedData() {
+        const inputs = form.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            localStorage.removeItem('form_' + input.name);
+        });
     }
 
     function createErrorModal() {
@@ -115,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('errorModal').style.display = 'none';
     }
 
-    // Cerrar modal con ESC
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeErrorModal();
