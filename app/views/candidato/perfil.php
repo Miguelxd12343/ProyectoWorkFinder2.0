@@ -41,7 +41,7 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
       <a href="<?= URLROOT ?>/Candidato/ofertas">Ofertas</a>
     </li>
     <li class="<?= basename($_SERVER['PHP_SELF']) == 'invitaciones.php' ? 'active' : '' ?>">
-      <a href="<?= URLROOT ?>/Candidato/invitaciones">Invitaciones✉️</a>
+      <a href="<?= URLROOT ?>/Candidato/invitaciones">Invitaciones</a>
     </li>
     <li class="<?= basename($_SERVER['PHP_SELF']) == 'solicitudes.php' ? 'active' : '' ?>">
       <a href="<?= URLROOT ?>/Candidato/postulaciones">Solicitudes</a>
@@ -115,7 +115,7 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
 
     <?php if (!empty($perfil['HojaDeVidaPath'])): ?>
         <a href="<?= URLROOT ?>/Upload/serveFile?file=<?= urlencode($perfil['HojaDeVidaPath']) ?>" target="_blank" class="cv-link">
-            📄 Ver Hoja de Vida
+            📄 Ver Hoja de Vida CV
         </a>
     <?php endif; ?>
 </div>
@@ -214,7 +214,7 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
                 </h3>
                 
                 <div class="form-group">
-                  <label class="form-label" for="empleo_deseado">Empleo Deseado</label>
+                  <label class="form-label" for="empleo_deseado">Cargo-Estudios</label>
                   <input type="text" id="empleo_deseado" name="empleo_deseado" class="form-input" 
                          value="<?= htmlspecialchars($perfil['EmpleoDeseado'] ?? '') ?>"
                          placeholder="Ej: Desarrollador Web, Contador, Asistente Administrativo">
@@ -230,14 +230,14 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
 
               <div class="form-section">
                 <h3 class="section-title">
-                  📄 Hoja de Vida
+                  📄 Hoja de Vida CV
                 </h3>
                 
                 <div class="form-group">
-                  <label class="form-label" for="cv">Subir Hoja de Vida (PDF máximo 5MB)</label>
+                  <label class="form-label" for="cv">Subir Hoja de Vida CV (PDF máximo 5MB)</label>
                   <input type="file" id="cv" name="cv" class="file-input" accept="application/pdf">
                   <div class="form-help">
-                    Sube tu hoja de vida en formato PDF. El archivo anterior será reemplazado si subes uno nuevo.
+                    Sube tu hoja de vida CV en formato PDF. El archivo anterior será reemplazado si subes uno nuevo.
                   </div>
                 </div>
               </div>

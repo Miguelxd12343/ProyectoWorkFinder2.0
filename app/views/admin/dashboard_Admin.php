@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../public/css/dashboard_admin.css?v=<?php echo time(); ?>">
 
 
-    <link rel="icon" href="<?= URLROOT ?>/images/imagesolologo.png" type="image/png">
+    <link rel="icon" href="public/images/imagesolologo.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>

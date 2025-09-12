@@ -6,7 +6,7 @@
     <title>Estadísticas - WorkFinderPro</title>
     <link rel="stylesheet" href="../public/css/dashboard_admin.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../public/css/styles_Estadisticas.css?v=<?php echo time(); ?>">
-    <link rel="icon" href="<?= URLROOT ?>/images/imagesolologo.png" type="image/png">
+    <link rel="icon" href="public/images/imagesolologo.png" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.30.1/index.js"></script>
 </head>

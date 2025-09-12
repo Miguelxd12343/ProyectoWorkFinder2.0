@@ -20,7 +20,7 @@ if ($_SESSION['usuario_rol'] != 3) {
   <title>Gestionar Candidatos - WorkFinderPro Admin</title>
   <link rel="stylesheet" href="../public/css/dashboard_admin.css?v=<?php echo time(); ?>">
   <link rel="stylesheet" href="/ProyectoWorkfinder2.0/public/css/styles_Gestionar_Candidatos.css">
-  <link rel="icon" href="<?= URLROOT ?>/images/imagesolologo.png" type="image/png">
+  <link rel="icon" href="public/images/imagesolologo.png" type="image/png">
   <script>
     window.addEventListener("pageshow", function (event) {
       if (event.persisted || (performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
@@ -130,16 +130,8 @@ if ($_SESSION['usuario_rol'] != 3) {
         <input type="text" id="buscarCandidato" placeholder="🔍 Buscar candidato por nombre o email..." />
       </div>
       <div class="filtros-candidatos">
-        <select id="filtroEstado" class="filtro-select">
-          <option value="">Todos los estados</option>
-          <option value="activo">Activos</option>
-          <option value="inactivo">Inactivos</option>
-        </select>
       </div>
       <div class="acciones-rapidas">
-        <button class="btn-exportar" onclick="exportarCandidatos()">
-          📊 Exportar Lista
-        </button>
         <button class="btn-actualizar" onclick="location.reload()">
           🔄 Actualizar
         </button>
@@ -202,14 +194,7 @@ if ($_SESSION['usuario_rol'] != 3) {
                         class="btn-accion btn-eliminar">
                   🗑️ Eliminar
                 </button>
-                <button onclick="verDetalles(<?= $candidato['IdUsuario'] ?? 0 ?>)" 
-                        class="btn-accion btn-detalles">
-                  👁️ Ver Detalles
-                </button>
-                <button onclick="verCV(<?= $candidato['IdUsuario'] ?? 0 ?>)" 
-                        class="btn-accion btn-cv">
-                  📄 Ver CV
-                </button>
+
               </div>
             </div>
           </div>

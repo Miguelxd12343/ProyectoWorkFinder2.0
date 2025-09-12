@@ -428,61 +428,142 @@ class AdminController {
         exit;
     }
 
-    // ====================
-    // Funciones de acción originales
-    // ====================
+// ====================
+// Acciones sobre candidatos
+// ====================
 
-    public function editarUsuario($id) {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $nombre = $_POST['nombre'];
-            $email = $_POST['email'];
+public function candidatoDetalle($id) {
+    // Traer datos del usuario
+    $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE IdUsuario = ?");
+    $stmt->execute([$id]);
+    $candidato = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $sql = "UPDATE usuario SET Nombre = ?, Email = ? WHERE IdUsuario = ?";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([$nombre, $email, $id]);
-
-            header('Location: ' . URLROOT . '/Admin/gestionarCandidatos?success=usuario_editado');
-            exit;
-        } else {
-            $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE IdUsuario = ?");
-            $stmt->execute([$id]);
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-            require_once __DIR__ . '/../views/admin/editar_usuario.php';
-        }
-    }
-
-    public function eliminarUsuario($id) {
-        $stmt = $this->pdo->prepare("DELETE FROM usuario WHERE IdUsuario = ?");
-        $stmt->execute([$id]);
-        header('Location: ' . URLROOT . '/Admin/gestionarCandidatos?success=usuario_eliminado');
+    if (!$candidato) {
+        header('Location: ' . URLROOT . '/Admin/gestionarCandidatos?error=no_existe');
         exit;
     }
 
-    public function editarEmpresa($id) {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $nombre = $_POST['nombre'];
-            $email = $_POST['email'];
+    // Traer datos del perfil (si existen)
+    $stmtPerfil = $this->pdo->prepare("SELECT * FROM perfilusuario WHERE IdUsuario = ?");
+    $stmtPerfil->execute([$id]);
+    $perfil = $stmtPerfil->fetch(PDO::FETCH_ASSOC);
 
-            $sql = "UPDATE usuario SET Nombre = ?, Email = ? WHERE IdUsuario = ?";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([$nombre, $email, $id]);
+    // Fusionar datos de usuario + perfil
+    if ($perfil) {
+        $candidato = array_merge($candidato, $perfil);
+    }
 
-            header('Location: ' . URLROOT . '/Admin/gestionarEmpresas?success=empresa_editada');
-            exit;
-        } else {
-            $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE IdUsuario = ?");
-            $stmt->execute([$id]);
-            $empresa = $stmt->fetch(PDO::FETCH_ASSOC);
-            require_once __DIR__ . '/../views/admin/editar_empresa.php';
+    // Calcular edad si tiene fecha de nacimiento
+    $edadCalculada = '';
+    if (!empty($candidato['Edad'])) {
+        try {
+            $fechaNac = new DateTime($candidato['Edad']);
+            $hoy = new DateTime();
+            $edadCalculada = $hoy->diff($fechaNac)->y;
+        } catch (Exception $e) {
+            $edadCalculada = '';
         }
     }
 
-    public function eliminarEmpresa($id) {
-        $stmt = $this->pdo->prepare("DELETE FROM usuario WHERE IdUsuario = ?");
-        $stmt->execute([$id]);
-        header('Location: ' . URLROOT . '/Admin/gestionarEmpresas?success=empresa_eliminada');
+    $accion = 'editar';
+    require_once __DIR__ . '/../views/admin/candidato_detalle.php';
+}
+
+public function editarCandidato($id) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Actualizar tabla usuario
+        $sql = "UPDATE usuario SET 
+                    Nombre = ?, 
+                    Email = ? 
+                WHERE IdUsuario = ?";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            $_POST['nombre'],
+            $_POST['email'],
+            $id
+        ]);
+
+        // Actualizar tabla perfilusuario
+        $sqlPerfil = "UPDATE perfilusuario SET 
+                        Edad = ?, 
+                        Cedula = ?, 
+                        EstadoCivil = ?, 
+                        Telefono = ?, 
+                        Direccion = ?, 
+                        EmpleoDeseado = ?, 
+                        Descripcion = ? 
+                      WHERE IdUsuario = ?";
+        $stmtPerfil = $this->pdo->prepare($sqlPerfil);
+        $stmtPerfil->execute([
+            $_POST['edad'],
+            $_POST['cedula'],
+            $_POST['estado_civil'],
+            $_POST['telefono'],
+            $_POST['direccion'],
+            $_POST['empleo_deseado'],
+            $_POST['descripcion'],
+            $id
+        ]);
+
+        // ✅ Subida de CV
+        if (!empty($_FILES['cv']['name'])) {
+            $cvDir = __DIR__ . '/../../public/uploads/cv/';
+            if (!is_dir($cvDir)) {
+                mkdir($cvDir, 0777, true);
+            }
+
+            $cvPath = 'uploads/cv/' . time() . '_' . basename($_FILES['cv']['name']);
+            move_uploaded_file($_FILES['cv']['tmp_name'], $cvDir . basename($cvPath));
+
+            $stmt = $this->pdo->prepare("UPDATE perfilusuario SET HojaDeVidaPath = ? WHERE IdUsuario = ?");
+            $stmt->execute([$cvPath, $id]);
+        }
+
+        header('Location: ' . URLROOT . '/Admin/candidatoDetalle/' . $id . '?success=1');
+        exit;
+    } else {
+        header('Location: ' . URLROOT . '/Admin/candidatoDetalle/' . $id);
         exit;
     }
+}
+
+
+// ====================
+// Acciones sobre empresas
+// ====================
+
+public function empresaDetalle($id) {
+    $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE IdUsuario = ?");
+    $stmt->execute([$id]);
+    $empresa = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$empresa) {
+        header('Location: ' . URLROOT . '/Admin/gestionarEmpresas?error=no_existe');
+        exit;
+    }
+
+    $accion = 'editar';
+    require_once __DIR__ . '/../views/admin/empresa_detalle.php';
+}
+
+public function editarEmpresa($id) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $nombre = $_POST['nombre'];
+        $email  = $_POST['email'];
+
+        $sql = "UPDATE usuario SET Nombre = ?, Email = ? WHERE IdUsuario = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$nombre, $email, $id]);
+
+        header('Location: ' . URLROOT . '/Admin/gestionarEmpresas?success=empresa_editada');
+        exit;
+    } else {
+        header('Location: ' . URLROOT . '/Admin/empresaDetalle/' . $id);
+        exit;
+    }
+}
+
 
     // ====================
     // Endpoint para gráficas (legacy)

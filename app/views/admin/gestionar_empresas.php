@@ -20,7 +20,7 @@ if ($_SESSION['usuario_rol'] != 3) {
   <title>Gestionar Empresas - WorkFinderPro Admin</title>
   <link rel="stylesheet" href="../public/css/dashboard_admin.css?v=<?php echo time(); ?>">
   <link rel="stylesheet" href="/ProyectoWorkfinder2.0/public/css/styles_Gestionar_Empresas.css">
-  <link rel="icon" href="<?= URLROOT ?>/images/imagesolologo.png" type="image/png">
+  <link rel="icon" href="public/images/imagesolologo.png" type="image/png">
   <script>
     window.addEventListener("pageshow", function (event) {
       if (event.persisted || (performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
@@ -122,9 +122,7 @@ if ($_SESSION['usuario_rol'] != 3) {
         <input type="text" id="buscarEmpresa" placeholder="🔍 Buscar empresa por nombre o email..." />
       </div>
       <div class="acciones-rapidas">
-        <button class="btn-exportar" onclick="exportarEmpresas()">
-          📊 Exportar Lista
-        </button>
+
         <button class="btn-actualizar" onclick="location.reload()">
           🔄 Actualizar
         </button>
@@ -177,10 +175,7 @@ if ($_SESSION['usuario_rol'] != 3) {
                         class="btn-accion btn-eliminar">
                   🗑️ Eliminar
                 </button>
-                <button onclick="verDetalles(<?= $empresa['IdUsuario'] ?>)" 
-                        class="btn-accion btn-detalles">
-                  👁️ Ver Detalles
-                </button>
+
               </div>
             </div>
           </div>

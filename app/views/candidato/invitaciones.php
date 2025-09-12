@@ -47,7 +47,7 @@ function tiempoRelativo($fecha) {
             <a href="<?= URLROOT ?>/Candidato/ofertas">Ofertas</a>
         </li>
         <li class="<?= basename($_SERVER['PHP_SELF']) == 'invitaciones.php' ? 'active' : '' ?>">
-            <a href="<?= URLROOT ?>/Candidato/invitaciones">Invitaciones✉️</a>
+            <a href="<?= URLROOT ?>/Candidato/invitaciones">Invitaciones</a>
         </li>
         <li class="<?= basename($_SERVER['PHP_SELF']) == 'postulaciones.php' ? 'active' : '' ?>">
             <a href="<?= URLROOT ?>/Candidato/postulaciones">Solicitudes</a>
