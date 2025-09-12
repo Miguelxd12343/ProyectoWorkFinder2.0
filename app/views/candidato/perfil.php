@@ -114,7 +114,7 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
     <?php endif; ?>
 
     <?php if (!empty($perfil['HojaDeVidaPath'])): ?>
-        <a href="<?= URLROOT ?>/<?= htmlspecialchars($perfil['HojaDeVidaPath']) ?>" target="_blank" class="cv-link">
+        <a href="<?= URLROOT ?>/Upload/serveFile?file=<?= urlencode($perfil['HojaDeVidaPath']) ?>" target="_blank" class="cv-link">
             📄 Ver Hoja de Vida
         </a>
     <?php endif; ?>
@@ -148,49 +148,6 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
                   </div>
                   
                   <div class="form-group">
-                    <label class="form-label" for="edad">Fecha de Nacimiento *</label>
-                    <input type="date" id="edad" name="edad" class="form-input" 
-                           value="<?= htmlspecialchars($perfil['Edad'] ?? '') ?>" 
-                           <?= $bloquearEdad ? 'readonly' : '' ?> required>
-                    <div class="form-help">Debes ser mayor de 18 años</div>
-                  </div>
-                </div>
-                
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label" for="cedula">Cédula de Identidad *</label>
-                    <input type="text" id="cedula" name="cedula" 
-                           class="form-input <?= $errorCedula ? 'error-field' : '' ?>" 
-                           value="<?= htmlspecialchars($perfil['Cedula'] ?? '') ?>" 
-                           <?= $bloquearCedula ? 'readonly' : '' ?> required>
-                    <?php if ($errorCedula): ?>
-                      <div class="error-msg"><?= $errorCedula ?></div>
-                    <?php endif; ?>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label class="form-label" for="estado_civil">Estado Civil</label>
-                    <input type="text" id="estado_civil" name="estado_civil" class="form-input" 
-                           value="<?= htmlspecialchars($perfil['EstadoCivil'] ?? '') ?>"
-                           placeholder="Ej: Soltero, Casado, Unión libre">
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-section">
-    <h3 class="section-title">📸 Foto de Perfil</h3>
-    <div class="form-group">
-        <label class="form-label" for="foto">Subir Foto de Perfil</label>
-        <input type="file" id="foto" name="foto" class="file-input" accept="image/jpeg,image/png,image/jpg">
-        <div class="form-help">
-            Sube una foto en formato JPG o PNG, máximo 2MB.
-        </div>
-    </div>
-</div>
-
-<!-- Campos básicos con bloqueo condicional -->
-<div class="form-row">
-    <div class="form-group">
         <label class="form-label" for="edad">Fecha de Nacimiento *</label>
         <input type="date" id="edad" name="edad" class="form-input" 
                value="<?= htmlspecialchars($perfil['Edad'] ?? '') ?>" 
@@ -200,7 +157,10 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
         <?php endif; ?>
     </div>
     
-    <div class="form-group">
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group">
         <label class="form-label" for="cedula">Cédula de Identidad *</label>
         <input type="text" id="cedula" name="cedula" 
                class="form-input <?= $errorCedula ? 'error-field' : '' ?>" 
@@ -213,7 +173,18 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
             <div class="form-help">Debe coincidir con tu cédula de registro: <?= $cedulaOriginal ?></div>
         <?php endif; ?>
     </div>
-</div>
+                  
+                  <div class="form-group">
+                    <label class="form-label" for="estado_civil">Estado Civil</label>
+                    <input type="text" id="estado_civil" name="estado_civil" class="form-input" 
+                           value="<?= htmlspecialchars($perfil['EstadoCivil'] ?? '') ?>"
+                           placeholder="Ej: Soltero, Casado, Unión libre">
+                  </div>
+                </div>
+              </div>
+
+<!-- Campos básicos con bloqueo condicional -->
+
 
               <div class="form-section">
                 <h3 class="section-title">

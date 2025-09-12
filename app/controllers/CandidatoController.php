@@ -76,7 +76,7 @@ class CandidatoController {
     $errorCedula = "";
     $edadCalculada = "";
     
-    // Obtener datos del usuario desde la tabla usuario para validar cédula
+    // Obtener datos del usuario para validar cédula
     $usuarioData = $perfilModel->obtenerUsuario($userId);
     $cedulaOriginal = $usuarioData['IdentificacionFiscal'] ?? null;
 
@@ -102,8 +102,8 @@ class CandidatoController {
             'fotoPath' => $perfil['FotoPerfilPath'] ?? null
         ];
 
-        // Validación edad >= 18
-        if ($data['edad']) {
+        // Solo validar edad para nuevos perfiles
+        if ($esNuevoPerfil && $data['edad']) {
             $fechaNac = new DateTime($data['edad']);
             $edad = $fechaNac->diff(new DateTime())->y;
 
@@ -113,15 +113,18 @@ class CandidatoController {
             }
         }
 
-        // Validar que la cédula coincida con la del registro (solo para nuevos perfiles)
+        // Validar cédula solo para nuevos perfiles
         if ($esNuevoPerfil && $cedulaOriginal && $data['cedula'] !== $cedulaOriginal) {
             $errorCedula = "La cédula debe coincidir con la registrada en tu cuenta.";
-        } elseif ($perfilModel->existeCedula($data['cedula'], $userId)) {
+        } elseif ($esNuevoPerfil && $perfilModel->existeCedula($data['cedula'], $userId)) {
             $errorCedula = "La cédula ya está registrada.";
         }
 
         // Solo procesar si no hay errores
         if (!$mensaje && !$errorCedula) {
+            // Para perfiles existentes, usar la cédula y fecha existentes para las rutas de archivos
+            $cedulaParaArchivos = $esNuevoPerfil ? $data['cedula'] : $perfil['Cedula'];
+            
             // Subida de foto de perfil
             if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
                 $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -130,12 +133,12 @@ class CandidatoController {
                 if (in_array($fileType, $allowedTypes) && $_FILES['foto']['size'] <= 2 * 1024 * 1024) {
                     $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
                     $nombreFoto = "perfil." . $extension;
-                    $carpetaUsuario = __DIR__ . "/../../public/uploads/{$data['cedula']}/";
+                    $carpetaUsuario = __DIR__ . "/../../public/uploads/{$cedulaParaArchivos}/";
                     if (!is_dir($carpetaUsuario)) mkdir($carpetaUsuario, 0777, true);
                     $rutaFoto = $carpetaUsuario . $nombreFoto;
                     
                     if (move_uploaded_file($_FILES['foto']['tmp_name'], $rutaFoto)) {
-                        $data['fotoPath'] = "uploads/{$data['cedula']}/$nombreFoto";
+                        $data['fotoPath'] = "uploads/{$cedulaParaArchivos}/$nombreFoto";
                     }
                 } else {
                     $mensaje = "La imagen debe ser JPG o PNG y menor de 2MB.";
@@ -147,12 +150,12 @@ class CandidatoController {
             if (isset($_FILES['cv']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
                 if ($_FILES['cv']['size'] <= 5 * 1024 * 1024 && mime_content_type($_FILES['cv']['tmp_name']) === 'application/pdf') {
                     $nombreArchivo = "hojadevida.pdf";
-                    $carpetaUsuario = __DIR__ . "/../../public/uploads/{$data['cedula']}/";
+                    $carpetaUsuario = __DIR__ . "/../../public/uploads/{$cedulaParaArchivos}/";
                     if (!is_dir($carpetaUsuario)) mkdir($carpetaUsuario, 0777, true);
                     $rutaCompleta = $carpetaUsuario . $nombreArchivo;
                     
                     if (move_uploaded_file($_FILES['cv']['tmp_name'], $rutaCompleta)) {
-                        $data['cvPath'] = "uploads/{$data['cedula']}/$nombreArchivo";
+                        $data['cvPath'] = "uploads/{$cedulaParaArchivos}/$nombreArchivo";
                     }
                 } else {
                     $mensaje = "El archivo debe ser PDF y menor de 5MB.";
@@ -349,6 +352,116 @@ public function logout() {
     header("Location: " . URLROOT . "/Login/index");
     exit;
 }
+    public function enviarInvitacion($empresaId, $candidatoId, $puestoId, $mensaje) {
+    try {
+        // Verificar que no existe ya una invitación
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) FROM invitaciones 
+            WHERE IdEmpresa = ? AND IdCandidato = ? AND IdPuesto = ?
+        ");
+        $stmt->execute([$empresaId, $candidatoId, $puestoId]);
+
+        if ($stmt->fetchColumn() > 0) {
+            return [
+                'success' => false, 
+                'message' => "Ya has enviado una invitación a este candidato para este puesto."
+            ];
+        }
+
+        // Obtener datos para el correo
+        $datosInvitacion = $this->obtenerDatosInvitacion($empresaId, $candidatoId, $puestoId);
+
+        // Crear la invitación
+        $stmt = $this->pdo->prepare("
+            INSERT INTO invitaciones (IdEmpresa, IdCandidato, IdPuesto, Mensaje) 
+            VALUES (?, ?, ?, ?)
+        ");
+        
+        if ($stmt->execute([$empresaId, $candidatoId, $puestoId, $mensaje])) {
+            // Enviar correo al candidato
+            $this->enviarCorreoInvitacion($datosInvitacion, $mensaje);
+            
+            return [
+                'success' => true, 
+                'message' => "Invitación enviada correctamente al candidato."
+            ];
+        }
+
+        return [
+            'success' => false, 
+            'message' => "Error al enviar la invitación."
+        ];
+    } catch (PDOException $e) {
+        return [
+            'success' => false, 
+            'message' => "Error al enviar la invitación: " . $e->getMessage()
+        ];
+    }
+}
+
+private function obtenerDatosInvitacion($empresaId, $candidatoId, $puestoId) {
+    $stmt = $this->pdo->prepare("
+        SELECT 
+            c.Nombre as nombreCandidato,
+            c.Email as emailCandidato,
+            e.Nombre as nombreEmpresa,
+            p.Titulo as tituloOferta,
+            p.Descripcion as descripcionOferta
+        FROM usuario c
+        JOIN usuario e ON e.IdUsuario = ?
+        JOIN puestodetrabajo p ON p.IdPuesto = ?
+        WHERE c.IdUsuario = ?
+    ");
+    $stmt->execute([$empresaId, $puestoId, $candidatoId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+private function enviarCorreoInvitacion($datos, $mensajePersonalizado) {
+    require_once __DIR__ . '/../../libraries/MailService.php';
+    $mailService = new MailService();
+    
+    $mailService->enviarInvitacionCandidato(
+        $datos['emailCandidato'],
+        $datos['nombreCandidato'],
+        $datos['nombreEmpresa'],
+        $datos['tituloOferta'],
+        $mensajePersonalizado
+    );
+}
+
+public function notificarPostulacion($empresaId, $candidatoId, $puestoId) {
+    try {
+        // Obtener datos para el correo
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                e.Email as emailEmpresa,
+                e.Nombre as nombreEmpresa,
+                c.Nombre as nombreCandidato,
+                p.Titulo as tituloOferta
+            FROM usuario e
+            JOIN usuario c ON c.IdUsuario = ?
+            JOIN puestodetrabajo p ON p.IdPuesto = ? AND p.IdUsuario = ?
+            WHERE e.IdUsuario = ?
+        ");
+        $stmt->execute([$candidatoId, $puestoId, $empresaId, $empresaId]);
+        $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($datos) {
+            require_once __DIR__ . '/../../libraries/MailService.php';
+            $mailService = new MailService();
+            
+            $mailService->enviarNotificacionPostulacion(
+                $datos['emailEmpresa'],
+                $datos['nombreEmpresa'],
+                $datos['nombreCandidato'],
+                $datos['tituloOferta']
+            );
+        }
+    } catch (PDOException $e) {
+        error_log("Error enviando notificación de postulación: " . $e->getMessage());
+    }
+}
+
 
 }
 

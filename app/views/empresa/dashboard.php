@@ -93,17 +93,17 @@ if (!isset($nombreEmpresa)) {
             <div class="quick-actions">
                 <h2>🚀 Acciones Rápidas</h2>
                 <div class="actions-grid">
-                    <a href="crear_oferta.php" class="action-button">
+                    <a href="<?= URLROOT ?>/Empresa/crearOferta" class="action-button">
                         <div class="icon">➕</div>
                         <div class="label">Crear Nueva Oferta</div>
                     </a>
                     
-                    <a href="ver_ofertas_empresa.php" class="action-button">
+                    <a href="<?= URLROOT ?>/Empresa/verOfertas" class="action-button">
                         <div class="icon">📊</div>
                         <div class="label">Gestionar Ofertas</div>
                     </a>
                     
-                    <a href="invitar_candidatos.php" class="action-button">
+                    <a href="<?= URLROOT ?>/Empresa/invitarCandidatos" class="action-button">
                         <div class="icon">🎯</div>
                         <div class="label">Invitar Candidatos</div>
                     </a>

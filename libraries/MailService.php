@@ -126,4 +126,102 @@ class MailService {
             return false;
         }
     }
+
+    public function enviarInvitacionCandidato($emailCandidato, $nombreCandidato, $nombreEmpresa, $tituloOferta, $mensajePersonalizado) {
+    try {
+        $mensaje = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center;'>
+                    <h1 style='color: white; margin: 0;'>¡Nueva Invitación Laboral!</h1>
+                </div>
+                <div style='padding: 30px; background: white;'>
+                    <h2 style='color: #333;'>Hola {$nombreCandidato},</h2>
+                    <p><strong>{$nombreEmpresa}</strong> está interesada en tu perfil y te ha enviado una invitación para el puesto:</p>
+                    
+                    <div style='background: #f8f9ff; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #667eea;'>
+                        <h3 style='color: #667eea; margin: 0 0 10px 0;'>{$tituloOferta}</h3>
+                    </div>
+        ";
+
+        if ($mensajePersonalizado) {
+            $mensaje .= "
+                <div style='background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;'>
+                    <strong>Mensaje de la empresa:</strong>
+                    <p style='margin: 10px 0 0 0; font-style: italic;'>{$mensajePersonalizado}</p>
+                </div>
+            ";
+        }
+
+        $mensaje .= "
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='" . URLROOT . "/Login/index' style='background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;'>
+                            Ver Invitación
+                        </a>
+                    </div>
+                    
+                    <p>Inicia sesión en WorkFinderPro para ver los detalles completos y responder a esta invitación.</p>
+                    <p>¡Esta es una gran oportunidad para avanzar en tu carrera profesional!</p>
+                    
+                    <p>Saludos,<br>El equipo de WorkFinderPro</p>
+                </div>
+                <div style='background: #f8f9fa; padding: 15px; text-align: center; color: #666; font-size: 12px;'>
+                    © 2024 WorkFinderPro. Todos los derechos reservados.
+                </div>
+            </div>
+        ";
+
+        $this->mail->clearAddresses();
+        $this->mail->addAddress($emailCandidato);
+        $this->mail->Subject = "Nueva invitación laboral de {$nombreEmpresa} - WorkFinderPro";
+        $this->mail->Body = $mensaje;
+
+        return $this->mail->send();
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+public function enviarNotificacionPostulacion($emailEmpresa, $nombreEmpresa, $nombreCandidato, $tituloOferta) {
+    try {
+        $mensaje = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                <div style='background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 20px; text-align: center;'>
+                    <h1 style='color: white; margin: 0;'>¡Nueva Postulación Recibida!</h1>
+                </div>
+                <div style='padding: 30px; background: white;'>
+                    <h2 style='color: #333;'>Hola {$nombreEmpresa},</h2>
+                    <p>Tienes una nueva postulación para tu oferta de trabajo:</p>
+                    
+                    <div style='background: #dbeafe; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #1e40af;'>
+                        <h3 style='color: #1e40af; margin: 0 0 10px 0;'>{$tituloOferta}</h3>
+                        <p style='margin: 0; color: #1e293b;'><strong>Candidato:</strong> {$nombreCandidato}</p>
+                    </div>
+                    
+                    <div style='text-align: center; margin: 30px 0;'>
+                        <a href='" . URLROOT . "/Login/index' style='background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block;'>
+                            Ver Postulación
+                        </a>
+                    </div>
+                    
+                    <p>Inicia sesión en tu panel de empresa para revisar el perfil completo del candidato y gestionar la postulación.</p>
+                    
+                    <p>Saludos,<br>El equipo de WorkFinderPro</p>
+                </div>
+                <div style='background: #f8f9fa; padding: 15px; text-align: center; color: #666; font-size: 12px;'>
+                    © 2024 WorkFinderPro. Todos los derechos reservados.
+                </div>
+            </div>
+        ";
+
+        $this->mail->clearAddresses();
+        $this->mail->addAddress($emailEmpresa);
+        $this->mail->Subject = "Nueva postulación para {$tituloOferta} - WorkFinderPro";
+        $this->mail->Body = $mensaje;
+
+        return $this->mail->send();
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 }

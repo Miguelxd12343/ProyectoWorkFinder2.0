@@ -195,6 +195,38 @@
             box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
             color: white;
         }
+
+        .btn-editar {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+}
+
+.btn-editar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.btn-cancel {
+    background: #6b7280;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #4b5563;
+    color: white;
+}
     </style>
 </head>
 <body>
@@ -282,6 +314,10 @@
                             </div>
 
                             <div class="oferta-actions">
+                                <a href="<?= URLROOT ?>/Empresa/editarOferta?id=<?= $oferta['IdPuesto'] ?>" class="btn-action btn-editar">
+                                    ✏️ Editar
+                                </a>
+
                                 <?php if ($oferta['Estado'] === 'Activa'): ?>
                                     <form method="POST" style="display: inline;">
                                         <input type="hidden" name="id_oferta" value="<?= $oferta['IdPuesto'] ?>">

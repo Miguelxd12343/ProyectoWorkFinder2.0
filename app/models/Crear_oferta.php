@@ -119,5 +119,98 @@ class OfertaModel {
             return [];
         }
     }
+
+    public function validarOferta($data, $empresaId, $ofertaId = null) {
+        $errores = [];
+
+        // Validar campos obligatorios
+        if (empty(trim($data['titulo']))) {
+            $errores[] = "El título es obligatorio.";
+        }
+
+        if (empty(trim($data['descripcion']))) {
+            $errores[] = "La descripción es obligatoria.";
+        }
+
+        // Validar longitudes
+        if (strlen($data['titulo']) > 100) {
+            $errores[] = "El título no puede exceder 100 caracteres.";
+        }
+
+        if (strlen($data['descripcion']) < 25) {
+            $errores[] = "La descripción debe tener al menos 25 caracteres.";
+        }
+
+        // Verificar duplicados
+        if ($this->existeOfertaSimilar($data, $empresaId, $ofertaId)) {
+            $errores[] = "Ya tienes una oferta muy similar publicada. Verifica el título y descripción.";
+        }
+
+        return $errores;
+    }
+
+    private function existeOfertaSimilar($data, $empresaId, $ofertaId = null) {
+        try {
+            $sql = "SELECT COUNT(*) FROM puestodetrabajo 
+                    WHERE IdUsuario = ? AND (
+                        LOWER(Titulo) = LOWER(?) OR
+                        (LOWER(Titulo) LIKE LOWER(?) AND LOWER(Descripcion) LIKE LOWER(?))
+                    )";
+            
+            $params = [
+                $empresaId,
+                trim($data['titulo']),
+                '%' . trim($data['titulo']) . '%',
+                '%' . substr(trim($data['descripcion']), 0, 100) . '%'
+            ];
+
+            // Si es edición, excluir la oferta actual
+            if ($ofertaId) {
+                $sql .= " AND IdPuesto != ?";
+                $params[] = $ofertaId;
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            
+            return $stmt->fetchColumn() > 0;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function obtenerOferta($idOferta, $empresaId) {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT * FROM puestodetrabajo 
+                WHERE IdPuesto = ? AND IdUsuario = ?
+            ");
+            $stmt->execute([$idOferta, $empresaId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function actualizar($idOferta, $data) {
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE puestodetrabajo 
+                SET Titulo = ?, Descripcion = ?, Ubicacion = ?, TipoContrato = ?
+                WHERE IdPuesto = ?
+            ");
+            return $stmt->execute([
+                $data['titulo'],
+                $data['descripcion'],
+                $data['ubicacion'],
+                $data['tipo_contrato'],
+                $idOferta
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
+
+
 ?>

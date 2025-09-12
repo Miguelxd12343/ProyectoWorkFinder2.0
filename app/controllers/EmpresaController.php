@@ -48,30 +48,97 @@ class EmpresaController {
 
     public function crearOferta() {
         $mensaje = "";
-        $tipo_mensaje = "";
+    $tipo_mensaje = "";
+    $formData = []; // Para mantener datos en caso de error
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'titulo' => $_POST['titulo'] ?? '',
-                'descripcion' => $_POST['descripcion'] ?? '',
-                'ubicacion' => $_POST['ubicacion'] ?? '',
-                'tipo_contrato' => $_POST['tipo_contrato'] ?? '',
-                'id_usuario' => $_SESSION['usuario_id']
-            ];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = [
+            'titulo' => trim($_POST['titulo'] ?? ''),
+            'descripcion' => trim($_POST['descripcion'] ?? ''),
+            'ubicacion' => trim($_POST['ubicacion'] ?? ''),
+            'tipo_contrato' => $_POST['tipo_contrato'] ?? '',
+            'id_usuario' => $_SESSION['usuario_id']
+        ];
 
-            if ($data['titulo'] && $data['descripcion']) {
-                if ($this->ofertaModel->crear($data)) {
-                    $mensaje = "Oferta publicada exitosamente.";
-                    $tipo_mensaje = "success";
-                } else {
-                    $mensaje = "Error al publicar la oferta.";
-                    $tipo_mensaje = "error";
-                }
+        $formData = $data; // Guardar para repoblar formulario
+
+        // Validar datos
+        $errores = $this->ofertaModel->validarOferta($data, $_SESSION['usuario_id']);
+
+        if (empty($errores)) {
+            if ($this->ofertaModel->crear($data)) {
+                // Enviar notificación por correo (opcional)
+                // $this->enviarNotificacionNuevaOferta($data);
+                
+                header("Location: " . URLROOT . "/Empresa/crearOferta?success=1");
+                exit;
             } else {
-                $mensaje = "Todos los campos obligatorios deben estar completos.";
+                $mensaje = "Error al publicar la oferta.";
                 $tipo_mensaje = "error";
             }
+        } else {
+            $mensaje = implode(' ', $errores);
+            $tipo_mensaje = "error";
         }
+    }
+
+    // Verificar mensaje de éxito
+    if (isset($_GET['success'])) {
+        $mensaje = "Oferta publicada exitosamente.";
+        $tipo_mensaje = "success";
+    }
+
+    require_once __DIR__ . '/../views/empresa/crear_oferta.php';
+}
+
+public function editarOferta() {
+    $idOferta = $_GET['id'] ?? null;
+    $empresaId = $_SESSION['usuario_id'];
+    
+    if (!$idOferta) {
+        header("Location: " . URLROOT . "/Empresa/verOfertas");
+        exit;
+    }
+
+    $oferta = $this->ofertaModel->obtenerOferta($idOferta, $empresaId);
+    
+    if (!$oferta) {
+        header("Location: " . URLROOT . "/Empresa/verOfertas?error=" . urlencode("Oferta no encontrada"));
+        exit;
+    }
+
+    $mensaje = "";
+    $tipo_mensaje = "";
+    $formData = $oferta; // Datos existentes
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = [
+            'titulo' => trim($_POST['titulo'] ?? ''),
+            'descripcion' => trim($_POST['descripcion'] ?? ''),
+            'ubicacion' => trim($_POST['ubicacion'] ?? ''),
+            'tipo_contrato' => $_POST['tipo_contrato'] ?? ''
+        ];
+
+        $formData = array_merge($oferta, $data); // Combinar datos
+
+        // Validar datos
+        $errores = $this->ofertaModel->validarOferta($data, $empresaId, $idOferta);
+
+        if (empty($errores)) {
+            if ($this->ofertaModel->actualizar($idOferta, $data)) {
+                header("Location: " . URLROOT . "/Empresa/verOfertas?msg=" . urlencode("Oferta actualizada correctamente"));
+                exit;
+            } else {
+                $mensaje = "Error al actualizar la oferta.";
+                $tipo_mensaje = "error";
+            }
+        } else {
+            $mensaje = implode(' ', $errores);
+            $tipo_mensaje = "error";
+        }
+    }
+
+        require_once __DIR__ . '/../views/empresa/editar_oferta.php';
 
         require_once __DIR__ . '/../views/empresa/crear_oferta.php';
     }
@@ -135,5 +202,7 @@ class EmpresaController {
         header("Location: " . URLROOT . "/Login/index");
         exit;
     }
+
+    
 }
 ?>

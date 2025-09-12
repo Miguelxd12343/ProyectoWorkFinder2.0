@@ -15,3 +15,10 @@ window.addEventListener("pageshow", function (event) {
         }, 5000);
       }
     });
+
+    document.getElementById('foto-input').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        // Auto-submit el formulario cuando se selecciona una foto
+        document.querySelector('form').submit();
+    }
+});
