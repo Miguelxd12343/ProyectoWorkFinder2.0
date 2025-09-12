@@ -113,8 +113,7 @@ if (!isset($nombreEmpresa)) {
                         <div class="label">Ver Solicitudes</div>
                     </a>
                 </div>
-            </div>
-
+            </div> 
             <!-- Consejos para empresas -->
             <div class="tips-section">
                 <h2>💡 Consejos para Atraer Talento</h2>

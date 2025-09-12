@@ -488,9 +488,9 @@
                                     </button>
                                     
                                     <?php if ($candidato['HojaDeVidaPath']): ?>
-                                        <a href="<?= URLROOT ?>/<?= htmlspecialchars($candidato['HojaDeVidaPath']) ?>" 
-                                           target="_blank" class="btn-view-cv">
-                                            📄 Ver Hoja de Vida
+                                        <a href="<?= URLROOT ?>/Upload/servefile?file=<?= urlencode($candidato['HojaDeVidaPath']) ?>" 
+                                          target="_blank" class="btn-view-cv">
+                                           📄 Ver Hoja de Vida
                                         </a>
                                     <?php endif; ?>
                                     

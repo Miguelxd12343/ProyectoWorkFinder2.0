@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../models/usuario.php';
 require_once __DIR__ . '/../../libraries/Database.php';
 
 class CandidatoController {
@@ -462,6 +462,79 @@ public function notificarPostulacion($empresaId, $candidatoId, $puestoId) {
     }
 }
 
+public function editarPerfil() {
+    $candidatoId = $_SESSION['usuario_id'];
+    $mensaje = "";
+    $tipo_mensaje = "";
 
+    // Obtener datos actuales
+    $usuarioActual = $this->usuarioModel->obtenerUsuarioPorId($candidatoId);
+    if (!$usuarioActual) {
+        header("Location: " . URLROOT . "/Candidato/dashboard");
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        try {
+            $datos = [
+                'nombre' => trim($_POST['nombre'] ?? ''),
+                'email' => trim($_POST['email'] ?? '')
+            ];
+
+            // Cambio de contraseña (opcional)
+            if (!empty($_POST['nueva_contrasena'])) {
+                if (empty($_POST['contrasena_actual'])) {
+                    throw new Exception("Debes ingresar tu contraseña actual para cambiarla.");
+                }
+                $this->usuarioModel->cambiarContrasena($candidatoId, $_POST['contrasena_actual'], $_POST['nueva_contrasena']);
+            }
+
+            $this->usuarioModel->actualizarPerfil($candidatoId, $datos);
+            
+            // Actualizar sesión
+            $_SESSION['usuario_nombre'] = $datos['nombre'];
+            $_SESSION['usuario_email'] = $datos['email'];
+
+            $mensaje = "Perfil actualizado correctamente.";
+            $tipo_mensaje = "success";
+            
+            // Obtener datos actualizados
+            $usuarioActual = $this->usuarioModel->obtenerUsuarioPorId($candidatoId);
+
+        } catch (Exception $e) {
+            $mensaje = $e->getMessage();
+            $tipo_mensaje = "error";
+        }
+    }
+
+    require_once __DIR__ . '/../views/candidato/editar_perfil.php';
+}
+
+public function eliminarCuenta() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/Candidato/dashboard");
+        exit;
+    }
+
+    $candidatoId = $_SESSION['usuario_id'];
+    
+    try {
+        if (!isset($_POST['confirm_delete']) || !isset($_POST['password_confirm'])) {
+            throw new Exception("Faltan datos de confirmación.");
+        }
+
+        $this->usuarioModel->eliminarCuenta($candidatoId, $_POST['password_confirm']);
+        
+        // Cerrar sesión
+        session_destroy();
+        
+        header("Location: " . URLROOT . "/Login/index?msg=" . urlencode("Cuenta eliminada correctamente"));
+        exit;
+
+    } catch (Exception $e) {
+        header("Location: " . URLROOT . "/Candidato/dashboard?error=" . urlencode($e->getMessage()));
+        exit;
+    }
+}
 }
 

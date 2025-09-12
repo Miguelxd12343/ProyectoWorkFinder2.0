@@ -1,9 +1,12 @@
 <?php
+require_once __DIR__ . '/../../libraries/MailService.php';
 class CandidatoModel {
     private $pdo;
+    private $MailService;
 
     public function __construct($pdo) {
         $this->pdo = $pdo;
+        $this->MailService = new MailService();
     }
 
     public function getCandidatosConPerfil() {
@@ -25,45 +28,64 @@ class CandidatoModel {
     }
 
     public function enviarInvitacion($empresaId, $candidatoId, $puestoId, $mensaje) {
-        try {
-            // Verificar que no existe ya una invitación
-            $stmt = $this->pdo->prepare("
-                SELECT COUNT(*) FROM invitaciones 
-                WHERE IdEmpresa = ? AND IdCandidato = ? AND IdPuesto = ?
-            ");
-            $stmt->execute([$empresaId, $candidatoId, $puestoId]);
+    try {
+        // Verificar que no existe ya una invitación
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) FROM invitaciones 
+            WHERE IdEmpresa = ? AND IdCandidato = ? AND IdPuesto = ?
+        ");
+        $stmt->execute([$empresaId, $candidatoId, $puestoId]);
 
-            if ($stmt->fetchColumn() > 0) {
-                return [
-                    'success' => false, 
-                    'message' => "Ya has enviado una invitación a este candidato para este puesto."
-                ];
-            }
-
-            // Crear la invitación
-            $stmt = $this->pdo->prepare("
-                INSERT INTO invitaciones (IdEmpresa, IdCandidato, IdPuesto, Mensaje) 
-                VALUES (?, ?, ?, ?)
-            ");
-            
-            if ($stmt->execute([$empresaId, $candidatoId, $puestoId, $mensaje])) {
-                return [
-                    'success' => true, 
-                    'message' => "Invitación enviada correctamente al candidato."
-                ];
-            }
-
+        if ($stmt->fetchColumn() > 0) {
             return [
                 'success' => false, 
-                'message' => "Error al enviar la invitación."
-            ];
-        } catch (PDOException $e) {
-            return [
-                'success' => false, 
-                'message' => "Error al enviar la invitación: " . $e->getMessage()
+                'message' => "Ya has enviado una invitación a este candidato para este puesto."
             ];
         }
+
+        // NUEVO: Obtener datos para el correo
+        $datosInvitacion = $this->obtenerDatosInvitacion($empresaId, $candidatoId, $puestoId);
+
+        // Crear la invitación
+        $stmt = $this->pdo->prepare("
+            INSERT INTO invitaciones (IdEmpresa, IdCandidato, IdPuesto, Mensaje) 
+            VALUES (?, ?, ?, ?)
+        ");
+        
+        if ($stmt->execute([$empresaId, $candidatoId, $puestoId, $mensaje])) {
+            
+            // NUEVO: Enviar correo si se obtuvieron los datos
+            if ($datosInvitacion) {
+                try {
+                    $this->MailService->enviarInvitacionCandidato(
+                        $datosInvitacion['emailCandidato'],
+                        $datosInvitacion['nombreCandidato'],
+                        $datosInvitacion['nombreEmpresa'],
+                        $datosInvitacion['tituloOferta'],
+                        $mensaje
+                    );
+                } catch (Exception $e) {
+                    error_log("Error enviando correo: " . $e->getMessage());
+                }
+            }
+            
+            return [
+                'success' => true, 
+                'message' => "Invitación enviada correctamente al candidato."
+            ];
+        }
+
+        return [
+            'success' => false, 
+            'message' => "Error al enviar la invitación."
+        ];
+    } catch (PDOException $e) {
+        return [
+            'success' => false, 
+            'message' => "Error al enviar la invitación: " . $e->getMessage()
+        ];
     }
+}
 
     public function calcularEdad($fechaNacimiento) {
         if (!$fechaNacimiento) return 'No especificada';
@@ -72,5 +94,30 @@ class CandidatoModel {
         $edad = $hoy->diff($fecha);
         return $edad->y . ' años';
     }
+    private function obtenerDatosInvitacion($empresaId, $candidatoId, $puestoId) {
+    try {
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                c.Nombre as nombreCandidato,
+                c.Email as emailCandidato,
+                e.Nombre as nombreEmpresa,
+                p.Titulo as tituloOferta,
+                p.Descripcion as descripcionOferta
+            FROM usuario c
+            CROSS JOIN usuario e
+            CROSS JOIN puestodetrabajo p
+            WHERE c.IdUsuario = ? 
+            AND e.IdUsuario = ? 
+            AND p.IdPuesto = ?
+        ");
+        $stmt->execute([$candidatoId, $empresaId, $puestoId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error obteniendo datos de invitación: " . $e->getMessage());
+        return null;
+    }
+    }
+
+    
 }
 ?>

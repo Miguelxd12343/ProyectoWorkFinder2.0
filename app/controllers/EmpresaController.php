@@ -3,12 +3,14 @@ require_once __DIR__ . '/../../libraries/Database.php';
 require_once __DIR__ . '/../models/Crear_oferta.php';
 require_once __DIR__ . '/../models/CandidatoModel.php';
 require_once __DIR__ . '/../models/DashboardEmpresa.php';
+require_once __DIR__ . '/../models/usuario.php';
 use App\Models\DashboardEmpresa;
 class EmpresaController {
     private $dashboardModel;
     private $pdo;
     private $ofertaModel;
     private $candidatoModel;
+    private $usuarioModel;
 
     public function __construct() {
         $pdo = (new Database())->getConnection();
@@ -203,6 +205,81 @@ public function editarOferta() {
         exit;
     }
 
+    public function editarPerfil() {
+    $empresaId = $_SESSION['usuario_id'];
+    $mensaje = "";
+    $tipo_mensaje = "";
+
+    // Obtener datos actuales
+    $usuarioActual = $this->usuarioModel->obtenerUsuarioPorId($empresaId);
+    if (!$usuarioActual) {
+        header("Location: " . URLROOT . "/Empresa/dashboard");
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        try {
+            $datos = [
+                'nombre' => trim($_POST['nombre'] ?? ''),
+                'email' => trim($_POST['email'] ?? ''),
+                'direccion_empresa' => trim($_POST['direccion_empresa'] ?? ''),
+                'identificacion_fiscal' => trim($_POST['identificacion_fiscal'] ?? '')
+            ];
+
+            // Cambio de contraseña (opcional)
+            if (!empty($_POST['nueva_contrasena'])) {
+                if (empty($_POST['contrasena_actual'])) {
+                    throw new Exception("Debes ingresar tu contraseña actual para cambiarla.");
+                }
+                $this->usuarioModel->cambiarContrasena($empresaId, $_POST['contrasena_actual'], $_POST['nueva_contrasena']);
+            }
+
+            $this->usuarioModel->actualizarPerfil($empresaId, $datos);
+            
+            // Actualizar sesión
+            $_SESSION['usuario_nombre'] = $datos['nombre'];
+            $_SESSION['usuario_email'] = $datos['email'];
+
+            $mensaje = "Perfil actualizado correctamente.";
+            $tipo_mensaje = "success";
+            
+            // Obtener datos actualizados
+            $usuarioActual = $this->usuarioModel->obtenerUsuarioPorId($empresaId);
+
+        } catch (Exception $e) {
+            $mensaje = $e->getMessage();
+            $tipo_mensaje = "error";
+        }
+    }
+
+    require_once __DIR__ . '/../views/empresa/editar_perfil.php';
+}
+
+public function eliminarCuenta() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . URLROOT . "/Empresa/dashboard");
+        exit;
+    }
+
+    $empresaId = $_SESSION['usuario_id'];
     
+    try {
+        if (!isset($_POST['confirm_delete']) || !isset($_POST['password_confirm'])) {
+            throw new Exception("Faltan datos de confirmación.");
+        }
+
+        $this->usuarioModel->eliminarCuenta($empresaId, $_POST['password_confirm']);
+        
+        // Cerrar sesión
+        session_destroy();
+        
+        header("Location: " . URLROOT . "/Login/index?msg=" . urlencode("Cuenta eliminada correctamente"));
+        exit;
+
+    } catch (Exception $e) {
+        header("Location: " . URLROOT . "/Empresa/dashboard?error=" . urlencode($e->getMessage()));
+        exit;
+    }
+}
 }
 ?>

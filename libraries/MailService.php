@@ -19,13 +19,13 @@ class MailService {
         $this->mail->Host = 'smtp.gmail.com';
         $this->mail->SMTPAuth = true;
         $this->mail->Username = 'sebastianmatth06@gmail.com';
-        $this->mail->Password = 'lrxs cndd pwrw gqrz'; // ⚠️ Usa clave de aplicación, no la normal
+        $this->mail->Password = 'lrxs cndd pwrw gqrz'; 
         $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mail->Port = 587;
 
         // Configuración general
-        $this->mail->CharSet = 'UTF-8';   // ✅ Soluciona los caracteres raros
-        $this->mail->Encoding = 'base64'; // ✅ Mejor compatibilidad con acentos
+        $this->mail->CharSet = 'UTF-8';   
+        $this->mail->Encoding = 'base64'; 
         $this->mail->setFrom('sebastianmatth06@gmail.com', 'WorkFinderPro');
         $this->mail->isHTML(true);
     }
@@ -219,9 +219,14 @@ public function enviarNotificacionPostulacion($emailEmpresa, $nombreEmpresa, $no
         $this->mail->Body = $mensaje;
 
         return $this->mail->send();
-    } catch (Exception $e) {
-        return false;
-    }
+        } catch (Exception $e) {
+    // DEBUG: Ver el error exacto
+    error_log("Error de correo: " . $e->getMessage());
+    echo "Error específico: " . $e->getMessage(); // Solo para debug
+    return false;
+        }       
+} 
+  
 }
 
-}
+
