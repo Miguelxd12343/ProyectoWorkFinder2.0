@@ -166,10 +166,11 @@ if ($_SESSION['usuario_rol'] != 2) {
                 <?php if ($oferta['yaPostulado']): ?>
                   <button class="btn-postulado">✅ Ya Postulado</button>
                 <?php else: ?>
-                  <form method="POST" action="postular_oferta.php" style="display: inline;">
+                  <form method="POST" action="<?= URLROOT ?>/Candidato/postular" style="display: inline;">
                     <input type="hidden" name="id_puesto" value="<?= $oferta['IdPuesto'] ?>">
                     <button type="submit" class="btn-postular">🚀 Postularse</button>
                   </form>
+
                 <?php endif; ?>
               </div>
             </div>

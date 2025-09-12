@@ -8,12 +8,12 @@ class OfertaModel {
 
     // Estadísticas
     public function contarOfertasActivas() {
-        $stmt = $this->pdo->query("SELECT COUNT(*) FROM ofertaempleo WHERE Estado = 'activa'");
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM puestodetrabajo WHERE Estado = 'Activa'");
         return $stmt->fetchColumn();
     }
 
     public function contarEmpresas() {
-        $stmt = $this->pdo->query("SELECT COUNT(DISTINCT IdEmpresa) FROM ofertaempleo WHERE Estado = 'activa'");
+        $stmt = $this->pdo->query("SELECT COUNT(DISTINCT IdUsuario) FROM puestodetrabajo WHERE Estado = 'Activa'");
         return $stmt->fetchColumn();
     }
 
@@ -25,46 +25,43 @@ class OfertaModel {
 
     // Filtros
     public function obtenerUbicaciones() {
-        $stmt = $this->pdo->query("SELECT DISTINCT Ubicacion FROM ofertaempleo WHERE Estado = 'activa'");
+        $stmt = $this->pdo->query("SELECT DISTINCT Ubicacion FROM puestodetrabajo WHERE Estado = 'Activa'");
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function obtenerContratos() {
-        $stmt = $this->pdo->query("SELECT DISTINCT TipoContrato FROM ofertaempleo WHERE Estado = 'activa'");
+        $stmt = $this->pdo->query("SELECT DISTINCT TipoContrato FROM puestodetrabajo WHERE Estado = 'Activa'");
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     // Ofertas con filtros y estado de postulación
     public function obtenerOfertasFiltradas($ubicacion, $contrato, $busqueda, $idUsuario) {
-
-
-        
-        $sql = "SELECT o.*, e.NombreEmpresa,
+        $sql = "SELECT p.*, u.Nombre AS NombreEmpresa,
                        (SELECT COUNT(*) FROM solicitudempleo s 
-                        WHERE s.IdUsuario = ? AND s.IdPuesto = o.IdPuesto) as yaPostulado
-                FROM ofertaempleo o
-                JOIN empresa e ON o.IdEmpresa = e.IdEmpresa
-                WHERE o.Estado = 'activa'";
+                        WHERE s.IdUsuario = ? AND s.IdPuestoTrabajo = p.IdPuesto) as yaPostulado
+                FROM puestodetrabajo p
+                JOIN usuario u ON p.IdUsuario = u.IdUsuario
+                WHERE p.Estado = 'Activa'";
         $params = [$idUsuario];
 
         if (!empty($ubicacion)) {
-            $sql .= " AND o.Ubicacion = ?";
+            $sql .= " AND p.Ubicacion = ?";
             $params[] = $ubicacion;
         }
         if (!empty($contrato)) {
-            $sql .= " AND o.TipoContrato = ?";
+            $sql .= " AND p.TipoContrato = ?";
             $params[] = $contrato;
         }
         if (!empty($busqueda)) {
-            $sql .= " AND (o.Titulo LIKE ? OR o.Descripcion LIKE ?)";
+            $sql .= " AND (p.Titulo LIKE ? OR p.Descripcion LIKE ?)";
             $params[] = "%$busqueda%";
             $params[] = "%$busqueda%";
         }
 
-        $sql .= " ORDER BY o.FechaPublicacion DESC";
+        $sql .= " ORDER BY p.FechaPublicacion DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
 
-return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 }

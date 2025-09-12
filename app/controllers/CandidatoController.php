@@ -209,16 +209,42 @@ class CandidatoController {
 
     public function ofertas() {
     $this->verificarSesion();
-    require_once __DIR__ . '/../views/candidato/ver_ofertas.php';
-     // Datos que quieras pasar a la vista, por ahora solo de la sesión
-        $data = [
-            'nombreSesion' => $_SESSION['usuario_nombre'] ?? '',
-            'correoSesion' => $_SESSION['usuario_email'] ?? '',
-            'rolSesion'    => $_SESSION['usuario_rol'] ?? '',
-        ];
 
-        // Renderizar la vista de perfil del candidato
-        require_once __DIR__ . '/../views/candidato/ver_ofertas.php';
+    require_once __DIR__ . '/../models/Oferta.php';
+    $ofertaModel = new OfertaModel($this->pdo);
+
+    $userId = $_SESSION['usuario_id'];
+
+    // Filtros recibidos por GET
+    $ubicacion = $_GET['ubicacion'] ?? '';
+    $contrato  = $_GET['tipo_contrato'] ?? '';
+    $busqueda  = $_GET['busqueda'] ?? '';
+
+    // Obtener datos
+    $stats = [
+        'total_ofertas'    => $ofertaModel->contarOfertasActivas(),
+        'total_empresas'   => $ofertaModel->contarEmpresas(),
+        'mis_postulaciones'=> $ofertaModel->contarPostulaciones($userId)
+    ];
+
+    $filtros = [
+        'ubicaciones'          => $ofertaModel->obtenerUbicaciones(),
+        'contratos'            => $ofertaModel->obtenerContratos(),
+        'seleccionada_ubicacion' => $ubicacion,
+        'seleccionado_contrato'  => $contrato,
+        'busqueda'             => $busqueda
+    ];
+
+    $ofertas = $ofertaModel->obtenerOfertasFiltradas($ubicacion, $contrato, $busqueda, $userId);
+
+    // Datos de sesión
+    $data = [
+        'nombreSesion' => $_SESSION['usuario_nombre'] ?? '',
+        'correoSesion' => $_SESSION['usuario_email'] ?? '',
+        'rolSesion'    => $_SESSION['usuario_rol'] ?? '',
+    ];
+
+    require_once __DIR__ . '/../views/candidato/ver_ofertas.php';
 }
 
     public function postulaciones() {
@@ -535,6 +561,29 @@ public function eliminarCuenta() {
         header("Location: " . URLROOT . "/Candidato/dashboard?error=" . urlencode($e->getMessage()));
         exit;
     }
+}
+
+public function postular() {
+    $this->verificarSesion();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $idUsuario = $_SESSION['usuario_id'];
+        $idPuesto = $_POST['id_puesto'] ?? null;
+
+        if ($idPuesto) {
+            $stmt = $this->pdo->prepare("INSERT INTO solicitudempleo (IdUsuario, IdPuestoTrabajo, FechaEnvio) VALUES (?, ?, NOW())");
+            if ($stmt->execute([$idUsuario, $idPuesto])) {
+                header("Location: " . URLROOT . "/Candidato/ofertas?msg=" . urlencode("Postulación realizada con éxito."));
+                exit;
+            } else {
+                header("Location: " . URLROOT . "/Candidato/ofertas?error=" . urlencode("Error al postularse."));
+                exit;
+            }
+        }
+    }
+
+    header("Location: " . URLROOT . "/Candidato/ofertas");
+    exit;
 }
 }
 
