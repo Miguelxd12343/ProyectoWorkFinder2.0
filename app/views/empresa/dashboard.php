@@ -30,8 +30,9 @@ if (!isset($nombreEmpresa)) {
         <h2><a href="<?= URLROOT ?>" class="logo-link">WorkFinderPro</a></h2>
         <ul>
             <li class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard_empresa.php' ? 'active' : '' ?>">
-                <a href="index">Inicio</a>
+    <a href="<?= URLROOT ?>/Empresa/dashboard">Inicio</a>
             </li>
+
             <li class="<?= basename($_SERVER['PHP_SELF']) == 'crear_oferta.php' ? 'active' : '' ?>">
                 <a href="<?= URLROOT ?>/Empresa/crearOferta">Crear Oferta</a>
             </li>
@@ -41,7 +42,7 @@ if (!isset($nombreEmpresa)) {
             <li class="<?= basename($_SERVER['PHP_SELF']) == 'invitar_candidatos.php' ? 'active' : '' ?>">
                 <a href="<?= URLROOT ?>/Empresa/invitarCandidatos">Invitar Candidatos</a>
             </li>
-            <li><a href="logout.php">Cerrar Sesión</a></li>
+            <li><a href="<?= URLROOT ?>/Empresa/logout">Cerrar Sesión</a></li>
         </ul>
     </div>
 

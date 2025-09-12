@@ -128,7 +128,7 @@ $totalSolicitudes = $data['totalSolicitudes'] ?? 0;
           <div class="form-content">
             <?php if (!$esNuevoPerfil): ?>
               <div class="blocked-info">
-                <strong>ℹ️ Información:</strong> Algunos campos como nombre, fecha de nacimiento y cédula no se pueden modificar después de crear el perfil.
+                <strong>ℹ️ Información:</strong> Algunos campos como fecha de nacimiento y cédula no se pueden modificar después de crear el perfil.
               </div>
             <?php endif; ?>
 
