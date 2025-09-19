@@ -124,9 +124,7 @@ if ($_SESSION['usuario_rol'] != 2) {
           value="<?= htmlspecialchars($filtros['busqueda'] ?? '') ?>">
       </div>
 
-      <div class="filtro-grupo filtro-boton">
-        <button type="submit" class="btn-filtrar">🔍 Buscar</button>
-      </div>
+
     </div>
   </form>
 </div>

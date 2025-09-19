@@ -109,10 +109,7 @@ if (!isset($nombreEmpresa)) {
                         <div class="label">Invitar Candidatos</div>
                     </a>
                     
-                    <a href="ver_solicitudes_empresa.php" class="action-button">
-                        <div class="icon">📨</div>
-                        <div class="label">Ver Solicitudes</div>
-                    </a>
+                    
                 </div>
             </div> 
             <!-- Consejos para empresas -->

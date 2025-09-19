@@ -483,9 +483,7 @@
                                 <?php endif; ?>
 
                                 <div class="candidate-actions">
-                                    <button class="btn-view-profile" onclick="verPerfil(<?= $candidato['IdUsuario'] ?>)">
-                                        👁️ Ver Perfil Completo
-                                    </button>
+                                
                                     
                                     <?php if ($candidato['HojaDeVidaPath']): ?>
                                         <a href="<?= URLROOT ?>/Upload/servefile?file=<?= urlencode($candidato['HojaDeVidaPath']) ?>" 
